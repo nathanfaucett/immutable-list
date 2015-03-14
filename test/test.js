@@ -59,7 +59,7 @@ describe("List", function() {
 
             assert.equal(b.__root.next, a.__root);
             assert.equal(c.__root.next.next.next, a.__tail);
-            assert.equal(d.__root.next.next.next.next, a.__tail);
+            assert.equal(d.__root.next.next.next, a.__root.next);
 
             assert.deepEqual(b.toArray(), [1, 0, 1, 2]);
             assert.deepEqual(c.toArray(), [0, 1, 3, 2]);
@@ -91,6 +91,25 @@ describe("List", function() {
             assert.equal(List.equal(new List(0, 1, 2), new List(0, 1, 2)), true);
             assert.equal(List.equal(new List(0, 1, 2), new List(1, 2, 3)), false);
             assert.equal(List.equal(new List(0, 1, 2), new List(0, 1, 3)), false);
+        });
+    });
+
+    describe("#iterator([reverse = false : Boolean])", function() {
+        it("(reverse = false) should return Iterator starting from the beginning", function() {
+            var a = new List(0, 1, 2),
+                it = a.iterator();
+
+            assert.equal(it.next().value, 0);
+            assert.equal(it.next().value, 1);
+            assert.equal(it.next().value, 2);
+        });
+        it("(reverse = true) should return Iterator starting from the end", function() {
+            var a = new List(0, 1, 2),
+                it = a.iterator(true);
+
+            assert.equal(it.next().value, 2);
+            assert.equal(it.next().value, 1);
+            assert.equal(it.next().value, 0);
         });
     });
 });

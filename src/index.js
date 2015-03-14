@@ -1,10 +1,11 @@
 var create = require("create"),
-    isArray = require("is_array"),
+    isArrayLike = require("is_array_like"),
     fastSlice = require("fast_slice"),
     isEqual = require("is_equal");
 
 
-var ListPrototype = List.prototype;
+var ListPrototype = List.prototype,
+    ITERATOR_SYMBOL = typeof(Symbol) === "function" ? Symbol.iterator : false;
 
 
 module.exports = List;
@@ -13,7 +14,7 @@ module.exports = List;
 function List(value) {
     var length = arguments.length;
 
-    if (isArray(value) && length === 1) {
+    if (isArrayLike(value) && length === 1) {
         fromJS(this, value);
     } else if (length > 1) {
         fromJS(this, arguments);
@@ -93,6 +94,42 @@ ListPrototype.conj = function() {
     }
 };
 
+ListPrototype.iterator = function(reverse) {
+    var root, node;
+
+    if (reverse === true) {
+        root = this.__root;
+        node = this.__tail;
+    } else {
+        node = this.__root;
+    }
+
+    return {
+        next: function next() {
+            var value;
+
+            if (node === null) {
+                return {
+                    done: true,
+                    value: undefined
+                };
+            } else {
+                value = node.value;
+                node = reverse === true ? (root !== node ? findParent(root, node) : root) : node.next;
+
+                return {
+                    done: false,
+                    value: value
+                };
+            }
+        }
+    };
+};
+
+if (ITERATOR_SYMBOL) {
+    ListPrototype[ITERATOR_SYMBOL] = ListPrototype.iterator;
+}
+
 ListPrototype.toArray = function() {
     var array = [],
         node = this.__root;
@@ -114,7 +151,7 @@ ListPrototype.inspect = function() {
 };
 
 List.equal = function(a, b) {
-    if (a.__size !== b.__size) {
+    if (!a || !b || a.__size !== b.__size) {
         return false;
     } else {
         a = a.__root;

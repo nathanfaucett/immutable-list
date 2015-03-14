@@ -23,7 +23,7 @@
   "dependencies": {
     "create": "git://github.com/nathanfaucett/create",
     "fast_slice": "git://github.com/nathanfaucett/fast_slice",
-    "is_array": "git://github.com/nathanfaucett/is_array",
+    "is_array_like": "git://github.com/nathanfaucett/is_array_like",
     "is_equal": "git://github.com/nathanfaucett/is_equal"
   }
 }
