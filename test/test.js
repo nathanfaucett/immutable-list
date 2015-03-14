@@ -3,6 +3,7 @@ var assert = require("assert"),
 
 
 describe("List", function() {
+
     describe("#constructor", function() {
         it("should create new list from passed arguments", function() {
             assert.deepEqual(new List(0, 1, 2).toArray(), [0, 1, 2]);
@@ -19,6 +20,41 @@ describe("List", function() {
             assert.equal(new List([1, 2]).count(), 2);
             assert.equal(new List([1, 2], 3).count(), 2);
             assert.equal(new List(1).count(), 1);
+        });
+    });
+
+    describe("#conj(...values)", function() {
+        it("should add values to font of list", function() {
+            var a = new List(1, 2),
+                b = a.conj(0),
+                c = a.conj(0, 1, 2);
+
+            assert.deepEqual(b.toArray(), [0, 1, 2]);
+            assert.deepEqual(c.toArray(), [2, 1, 0, 1, 2]);
+        });
+    });
+
+    describe("#push(...values)", function() {
+        it("should push values to end of list", function() {
+            var a = new List(1, 2),
+                b = a.push(0),
+                c = a.push(0, 1, 2);
+
+            assert.deepEqual(b.toArray(), [1, 2, 0]);
+            assert.deepEqual(c.toArray(), [1, 2, 0, 1, 2]);
+        });
+    });
+
+    describe("#pop(...values)", function() {
+        it("should return list without first element of list", function() {
+            var a = new List(1, 2),
+                b = a.pop(),
+                c = b.pop(),
+                d = c.pop();
+
+            assert.deepEqual(b.toArray(), [2]);
+            assert.deepEqual(c.toArray(), []);
+            assert.equal(c, d);
         });
     });
 
