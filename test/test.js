@@ -22,14 +22,14 @@ describe("List", function() {
         });
     });
 
-    describe("#nth(index : Int)", function() {
-        it("should return nth element in list undefined if out of bounds", function() {
+    describe("#get(index : Int)", function() {
+        it("should return get element in list undefined if out of bounds", function() {
             var list = new List(1, 2, 3);
 
-            assert.equal(list.nth(0), 1);
-            assert.equal(list.nth(1), 2);
-            assert.equal(list.nth(2), 3);
-            assert.equal(list.nth(3), undefined);
+            assert.equal(list.get(0), 1);
+            assert.equal(list.get(1), 2);
+            assert.equal(list.get(2), 3);
+            assert.equal(list.get(3), undefined);
         });
     });
 

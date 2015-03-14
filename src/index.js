@@ -32,8 +32,8 @@ ListPrototype.count = function() {
     return this.__size;
 };
 
-ListPrototype.nth = function(index) {
-    var node = nth(this, index);
+ListPrototype.get = function(index) {
+    var node = get(this, index);
 
     if (node !== undefined) {
         return node.value;
@@ -43,7 +43,7 @@ ListPrototype.nth = function(index) {
 };
 
 ListPrototype.set = function(index, value) {
-    var node = nth(this, index);
+    var node = get(this, index);
 
     if (node !== undefined) {
         if (isEqual(node.value, value)) {
@@ -57,7 +57,7 @@ ListPrototype.set = function(index, value) {
 };
 
 ListPrototype.insert = function(index) {
-    var node = nth(this, index);
+    var node = get(this, index);
 
     if (node !== undefined) {
         return insert(this, node, index, fastSlice(arguments, 1));
@@ -72,7 +72,7 @@ ListPrototype.remove = function(index, count) {
     count = count || 1;
 
     if (count > 0) {
-        node = nth(this, index);
+        node = get(this, index);
 
         if (node !== undefined) {
             return remove(this, node, count);
@@ -284,7 +284,7 @@ function set(list, node, index, value) {
     return newList;
 }
 
-function nth(list, index) {
+function get(list, index) {
     var size = list.__size;
 
     if (index < 0 || index >= size) {
