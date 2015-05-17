@@ -1,10 +1,10 @@
-var create = require("create"),
-    isArrayLike = require("is_array_like"),
+var isArrayLike = require("is_array_like"),
     fastSlice = require("fast_slice"),
     isEqual = require("is_equal");
 
 
-var ListPrototype = List.prototype,
+var SKIPPER = {},
+    ListPrototype = List.prototype,
     ITERATOR_SYMBOL = typeof(Symbol) === "function" ? Symbol.iterator : false;
 
 
@@ -12,16 +12,28 @@ module.exports = List;
 
 
 function List(value) {
-    var length = arguments.length;
+    this.__size = 0;
+    this.__root = null;
+    this.__tail = null;
+
+    if (value !== SKIPPER) {
+        createList(this, value, arguments);
+    }
+}
+
+function createList(_this, value, args) {
+    var length = args.length;
 
     if (isArrayLike(value) && length === 1) {
-        fromJS(this, value);
+        fromJS(_this, value);
     } else if (length > 1) {
-        fromJS(this, arguments);
+        fromJS(_this, args);
     } else if (length === 1) {
-        this.__root = this.__tail = new Node(value, null);
-        this.__size = 1;
+        _this.__root = this.__tail = new Node(value, null);
+        _this.__size = 1;
     }
+
+    return _this;
 }
 
 function fromJS(list, array) {
@@ -39,25 +51,35 @@ function fromJS(list, array) {
     list.__tail = tail;
 }
 
-ListPrototype.__size = 0;
-ListPrototype.__root = null;
-ListPrototype.__tail = null;
+List.of = function(value) {
+    return createList(new List(SKIPPER), value, arguments);
+};
 
 ListPrototype.count = function() {
     return this.__size;
 };
 
-function get(list, index) {
-    var size = list.__size;
+ListPrototype.size = ListPrototype.count;
+
+if (Object.defineProperty) {
+    Object.defineProperty(ListPrototype, "length", {
+        get: function() {
+            return this.__size;
+        }
+    });
+}
+
+function get(_this, index) {
+    var size = _this.__size;
 
     if (index < 0 || index >= size) {
         return undefined;
     } else if (index === 0) {
-        return list.__root;
+        return _this.__root;
     } else if (index === size - 1) {
-        return list.__tail;
+        return _this.__tail;
     } else {
-        return findNode(list.__root, index);
+        return findNode(_this.__root, index);
     }
 }
 
@@ -79,17 +101,17 @@ function copyFromTo(from, to, newNode) {
     }
 }
 
-function set(list, node, index, value) {
-    var newList = create(ListPrototype),
+function set(_this, node, index, value) {
+    var list = new List(SKIPPER),
         newNode = new Node(value, node.next),
-        root = copyFromTo(list.__root, node, newNode),
-        tail = node.next === null ? newNode : list.__tail;
+        root = copyFromTo(_this.__root, node, newNode),
+        tail = node.next === null ? newNode : _this.__tail;
 
-    newList.__size = list.__size;
-    newList.__root = root;
-    newList.__tail = tail;
+    list.__size = _this.__size;
+    list.__root = root;
+    list.__tail = tail;
 
-    return newList;
+    return list;
 }
 
 ListPrototype.set = function(index, value) {
@@ -127,10 +149,10 @@ function insertCreateNodes(values, index, length, root) {
     return root;
 }
 
-function insert(list, node, index, values) {
-    var newList = create(ListPrototype),
+function insert(_this, node, index, values) {
+    var list = new List(SKIPPER),
 
-        oldRoot = list.__root,
+        oldRoot = _this.__root,
         parent = oldRoot !== node ? findParent(oldRoot, node) : null,
 
         length = values.length,
@@ -140,11 +162,11 @@ function insert(list, node, index, values) {
 
         root = parent !== null ? copyFromTo(oldRoot, node, first) : first;
 
-    newList.__size = list.__size + length;
-    newList.__root = root;
-    newList.__tail = tail;
+    list.__size = _this.__size + length;
+    list.__root = root;
+    list.__tail = tail;
 
-    return newList;
+    return list;
 }
 
 ListPrototype.insert = function(index) {
@@ -158,6 +180,7 @@ ListPrototype.insert = function(index) {
 };
 
 function findNext(node, count) {
+
     while (count-- && node !== null) {
         node = node.next;
     }
@@ -165,17 +188,17 @@ function findNext(node, count) {
     return node;
 }
 
-function remove(list, node, count) {
-    var newList = create(ListPrototype),
+function remove(_this, node, count) {
+    var list = new List(SKIPPER),
         next = findNext(node, count),
-        root = copyFromTo(list.__root, node, next),
-        tail = next !== null ? next : list.__tail;
+        root = copyFromTo(_this.__root, node, next),
+        tail = next !== null ? next : _this.__tail;
 
-    newList.__size = list.__size;
-    newList.__root = root;
-    newList.__tail = tail;
+    list.__size = _this.__size - count;
+    list.__root = root;
+    list.__tail = tail;
 
-    return newList;
+    return list;
 }
 
 ListPrototype.remove = function(index, count) {
@@ -196,12 +219,12 @@ ListPrototype.remove = function(index, count) {
     }
 };
 
-function conj(list, args, length) {
-    var newList = create(ListPrototype),
+function conj(_this, args, length) {
+    var list = new List(SKIPPER),
 
-        root = list.__root,
-        tail = list.__tail,
-        size = list.__size,
+        root = _this.__root,
+        tail = _this.__tail,
+        size = _this.__size,
         il = length - 1,
         i;
 
@@ -216,11 +239,11 @@ function conj(list, args, length) {
         root = new Node(args[i], root);
     }
 
-    newList.__size = length + size;
-    newList.__root = root;
-    newList.__tail = tail;
+    list.__size = length + size;
+    list.__root = root;
+    list.__tail = tail;
 
-    return newList;
+    return list;
 }
 
 ListPrototype.conj = function() {
@@ -235,18 +258,18 @@ ListPrototype.conj = function() {
 
 ListPrototype.pop = function() {
     var root = this.__root,
-        newList;
+        list;
 
     if (root === null) {
         return this;
     } else {
-        newList = create(ListPrototype);
+        list = new List(SKIPPER);
 
-        newList.__size = this.__size - 1;
-        newList.__root = root.next;
-        newList.__tail = this.__tail;
+        list.__size = this.__size - 1;
+        list.__root = root.next;
+        list.__tail = this.__tail;
 
-        return newList;
+        return list;
     }
 };
 
@@ -268,21 +291,21 @@ function copyNodes(node, last) {
     }
 }
 
-function push(list, args, length) {
-    var newList = create(ListPrototype),
+function push(_this, args, length) {
+    var list = new List(SKIPPER),
 
-        oldRoot = list.__root,
+        oldRoot = _this.__root,
 
         tail = new Node(args[length - 1], null),
         first = length !== 1 ? pushCreateNodes(args, length - 1, tail) : tail,
 
         root = oldRoot !== null ? copyNodes(oldRoot, first) : first;
 
-    newList.__size = list.__size + length;
-    newList.__root = root;
-    newList.__tail = tail;
+    list.__size = _this.__size + length;
+    list.__root = root;
+    list.__tail = tail;
 
-    return newList;
+    return list;
 }
 
 ListPrototype.push = function() {

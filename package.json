@@ -1,15 +1,15 @@
 {
-  "name": "immutable_list",
+  "name": "immutable-list",
   "version": "0.0.1",
   "description": "immutable persistent linked list for the browser and node.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nathanfaucett/immutable_list.git"
+    "url": "https://github.com/nathanfaucett/immutable-list.git"
   },
   "main": "src/index.js",
   "keywords": [
-    "immutable_list",
-    "immutable_list.js"
+    "immutable-list",
+    "immutable-list.js"
   ],
   "author": "Nathan Faucett",
   "license": "BSD-2-Clause",
@@ -21,7 +21,6 @@
     "mocha": "^2.1.0"
   },
   "dependencies": {
-    "create": "git://github.com/nathanfaucett/create",
     "fast_slice": "git://github.com/nathanfaucett/fast_slice",
     "is_array_like": "git://github.com/nathanfaucett/is_array_like",
     "is_equal": "git://github.com/nathanfaucett/is_equal"

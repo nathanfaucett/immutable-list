@@ -54,12 +54,14 @@ describe("List", function() {
 
             assert.deepEqual(b.toArray(), [2]);
             assert.deepEqual(c.toArray(), []);
+            assert.equal(b.size(), 1);
+            assert.equal(c.size(), 0);
             assert.equal(c, d);
         });
     });
 
     describe("#get(index : Int)", function() {
-        it("should return get element in list undefined if out of bounds", function() {
+        it("should return nth element in list undefined if out of bounds", function() {
             var list = new List(1, 2, 3);
 
             assert.equal(list.get(0), 1);
