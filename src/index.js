@@ -17,17 +17,17 @@ function List(value) {
     this.__tail = null;
 
     if (value !== IS_FAST_CREATE) {
-        createList(this, value, arguments);
+        List_createList(this, value, arguments);
     }
 }
 
-function createList(_this, value, args) {
+function List_createList(_this, value, args) {
     var length = args.length;
 
     if (isArrayLike(value) && length === 1) {
-        fromJS(_this, value);
+        List_fromJS(_this, value);
     } else if (length > 1) {
-        fromJS(_this, args);
+        List_fromJS(_this, args);
     } else if (length === 1) {
         _this.__root = this.__tail = new Node(value, null);
         _this.__size = 1;
@@ -36,7 +36,7 @@ function createList(_this, value, args) {
     return _this;
 }
 
-function fromJS(list, array) {
+function List_fromJS(list, array) {
     var length = array.length,
         i = length - 1,
         tail = new Node(array[i], null),
@@ -52,7 +52,7 @@ function fromJS(list, array) {
 }
 
 List.of = function(value) {
-    return createList(new List(IS_FAST_CREATE), value, arguments);
+    return List_createList(new List(IS_FAST_CREATE), value, arguments);
 };
 
 ListPrototype.count = function() {
@@ -63,9 +63,7 @@ ListPrototype.size = ListPrototype.count;
 
 if (Object.defineProperty) {
     Object.defineProperty(ListPrototype, "length", {
-        get: function() {
-            return this.__size;
-        }
+        get: ListPrototype.count
     });
 }
 
