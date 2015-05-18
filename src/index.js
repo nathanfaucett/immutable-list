@@ -36,14 +36,14 @@ function List_createList(_this, value, args) {
     return _this;
 }
 
-function List_fromJS(list, array) {
-    var length = array.length,
+function List_fromJS(list, args) {
+    var length = args.length,
         i = length - 1,
-        tail = new Node(array[i], null),
+        tail = new Node(args[i], null),
         root = tail;
 
     while (i--) {
-        root = new Node(array[i], root);
+        root = new Node(args[i], root);
     }
 
     list.__size = length;
@@ -51,9 +51,15 @@ function List_fromJS(list, array) {
     list.__tail = tail;
 }
 
+List.isList = function(value) {
+    return value && value.__List__ === true;
+};
+
 List.of = function(value) {
     return List_createList(new List(IS_FAST_CREATE), value, arguments);
 };
+
+ListPrototype.__List__ = true;
 
 ListPrototype.count = function() {
     return this.__size;
