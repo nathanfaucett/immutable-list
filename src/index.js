@@ -51,12 +51,12 @@ function List_fromJS(list, args) {
     list.__tail = tail;
 }
 
-List.isList = function(value) {
-    return value && value.__List__ === true;
-};
-
 List.of = function(value) {
     return List_createList(new List(IS_FAST_CREATE), value, arguments);
+};
+
+List.isList = function(value) {
+    return value && value.__List__ === true;
 };
 
 ListPrototype.__List__ = true;
@@ -65,9 +65,10 @@ ListPrototype.count = function() {
     return this.__size;
 };
 
-ListPrototype.size = ListPrototype.count;
-
 if (Object.defineProperty) {
+    Object.defineProperty(ListPrototype, "size", {
+        get: ListPrototype.count
+    });
     Object.defineProperty(ListPrototype, "length", {
         get: ListPrototype.count
     });

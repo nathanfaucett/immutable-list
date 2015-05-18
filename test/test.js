@@ -54,8 +54,8 @@ describe("List", function() {
 
             assert.deepEqual(b.toArray(), [2]);
             assert.deepEqual(c.toArray(), []);
-            assert.equal(b.size(), 1);
-            assert.equal(c.size(), 0);
+            assert.equal(b.size, 1);
+            assert.equal(c.size, 0);
             assert.equal(c, d);
         });
     });
