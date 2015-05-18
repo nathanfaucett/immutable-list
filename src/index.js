@@ -3,7 +3,7 @@ var isArrayLike = require("is_array_like"),
     isEqual = require("is_equal");
 
 
-var SKIPPER = {},
+var IS_FAST_CREATE = {},
     ListPrototype = List.prototype,
     ITERATOR_SYMBOL = typeof(Symbol) === "function" ? Symbol.iterator : false;
 
@@ -16,7 +16,7 @@ function List(value) {
     this.__root = null;
     this.__tail = null;
 
-    if (value !== SKIPPER) {
+    if (value !== IS_FAST_CREATE) {
         createList(this, value, arguments);
     }
 }
@@ -52,7 +52,7 @@ function fromJS(list, array) {
 }
 
 List.of = function(value) {
-    return createList(new List(SKIPPER), value, arguments);
+    return createList(new List(IS_FAST_CREATE), value, arguments);
 };
 
 ListPrototype.count = function() {
@@ -69,7 +69,7 @@ if (Object.defineProperty) {
     });
 }
 
-function get(_this, index) {
+function List_get(_this, index) {
     var size = _this.__size;
 
     if (index < 0 || index >= size) {
@@ -84,7 +84,7 @@ function get(_this, index) {
 }
 
 ListPrototype.get = function(index) {
-    var node = get(this, index);
+    var node = List_get(this, index);
 
     if (node !== undefined) {
         return node.value;
@@ -101,8 +101,8 @@ function copyFromTo(from, to, newNode) {
     }
 }
 
-function set(_this, node, index, value) {
-    var list = new List(SKIPPER),
+function List_set(_this, node, index, value) {
+    var list = new List(IS_FAST_CREATE),
         newNode = new Node(value, node.next),
         root = copyFromTo(_this.__root, node, newNode),
         tail = node.next === null ? newNode : _this.__tail;
@@ -115,13 +115,13 @@ function set(_this, node, index, value) {
 }
 
 ListPrototype.set = function(index, value) {
-    var node = get(this, index);
+    var node = List_get(this, index);
 
     if (node !== undefined) {
         if (isEqual(node.value, value)) {
             return this;
         } else {
-            return set(this, node, index, value);
+            return List_set(this, node, index, value);
         }
     } else {
         throw new Error("List set(index, value) index out of bounds");
@@ -149,8 +149,8 @@ function insertCreateNodes(values, index, length, root) {
     return root;
 }
 
-function insert(_this, node, index, values) {
-    var list = new List(SKIPPER),
+function List_insert(_this, node, index, values) {
+    var list = new List(IS_FAST_CREATE),
 
         oldRoot = _this.__root,
         parent = oldRoot !== node ? findParent(oldRoot, node) : null,
@@ -170,10 +170,10 @@ function insert(_this, node, index, values) {
 }
 
 ListPrototype.insert = function(index) {
-    var node = get(this, index);
+    var node = List_get(this, index);
 
     if (node !== undefined) {
-        return insert(this, node, index, fastSlice(arguments, 1));
+        return List_insert(this, node, index, fastSlice(arguments, 1));
     } else {
         throw new Error("List insert(index, value) index out of bounds");
     }
@@ -188,8 +188,8 @@ function findNext(node, count) {
     return node;
 }
 
-function remove(_this, node, count) {
-    var list = new List(SKIPPER),
+function List_remove(_this, node, count) {
+    var list = new List(IS_FAST_CREATE),
         next = findNext(node, count),
         root = copyFromTo(_this.__root, node, next),
         tail = next !== null ? next : _this.__tail;
@@ -207,10 +207,10 @@ ListPrototype.remove = function(index, count) {
     count = count || 1;
 
     if (count > 0) {
-        node = get(this, index);
+        node = List_get(this, index);
 
         if (node !== undefined) {
-            return remove(this, node, count);
+            return List_remove(this, node, count);
         } else {
             throw new Error("List remove(index[, count=1]) index out of bounds");
         }
@@ -219,8 +219,8 @@ ListPrototype.remove = function(index, count) {
     }
 };
 
-function conj(_this, args, length) {
-    var list = new List(SKIPPER),
+function List_conj(_this, args, length) {
+    var list = new List(IS_FAST_CREATE),
 
         root = _this.__root,
         tail = _this.__tail,
@@ -250,7 +250,7 @@ ListPrototype.conj = function() {
     var length = arguments.length;
 
     if (length !== 0) {
-        return conj(this, arguments, length);
+        return List_conj(this, arguments, length);
     } else {
         return this;
     }
@@ -263,7 +263,7 @@ ListPrototype.pop = function() {
     if (root === null) {
         return this;
     } else {
-        list = new List(SKIPPER);
+        list = new List(IS_FAST_CREATE);
 
         list.__size = this.__size - 1;
         list.__root = root.next;
@@ -291,8 +291,8 @@ function copyNodes(node, last) {
     }
 }
 
-function push(_this, args, length) {
-    var list = new List(SKIPPER),
+function List_push(_this, args, length) {
+    var list = new List(IS_FAST_CREATE),
 
         oldRoot = _this.__root,
 
@@ -312,21 +312,14 @@ ListPrototype.push = function() {
     var length = arguments.length;
 
     if (length !== 0) {
-        return push(this, arguments, length);
+        return List_push(this, arguments, length);
     } else {
         return this;
     }
 };
 
-ListPrototype.iterator = function(reverse) {
-    var root, node;
-
-    if (reverse === true) {
-        root = this.__root;
-        node = this.__tail;
-    } else {
-        node = this.__root;
-    }
+function List_iterator(_this) {
+    var node = _this.__root;
 
     return {
         next: function next() {
@@ -339,7 +332,7 @@ ListPrototype.iterator = function(reverse) {
                 };
             } else {
                 value = node.value;
-                node = reverse === true ? (root !== node ? findParent(root, node) : root) : node.next;
+                node = node.next;
 
                 return {
                     done: false,
@@ -348,6 +341,40 @@ ListPrototype.iterator = function(reverse) {
             }
         }
     };
+}
+
+function List_iteratorReverse(_this) {
+    var root = _this.__root,
+        node = _this.__tail;
+
+    return {
+        next: function next() {
+            var value;
+
+            if (node === null) {
+                return {
+                    done: true,
+                    value: undefined
+                };
+            } else {
+                value = node.value;
+                node = root !== node ? findParent(root, node) : root;
+
+                return {
+                    done: false,
+                    value: value
+                };
+            }
+        }
+    };
+}
+
+ListPrototype.iterator = function(reverse) {
+    if (reverse !== true) {
+        return List_iterator(this);
+    } else {
+        return List_iteratorReverse(this);
+    }
 };
 
 if (ITERATOR_SYMBOL) {
@@ -355,11 +382,12 @@ if (ITERATOR_SYMBOL) {
 }
 
 ListPrototype.toArray = function() {
-    var array = [],
-        node = this.__root;
+    var array = new Array(this.__size),
+        node = this.__root,
+        i = 0;
 
     while (node !== null) {
-        array[array.length] = node.value;
+        array[i++] = node.value;
         node = node.next;
     }
 
@@ -370,9 +398,7 @@ ListPrototype.toString = function() {
     return "(" + this.toArray().join(" ") + ")";
 };
 
-ListPrototype.inspect = function() {
-    return this.toString();
-};
+ListPrototype.inspect = ListPrototype.toString;
 
 List.equal = function(a, b) {
     if (!a || !b || a.__size !== b.__size) {

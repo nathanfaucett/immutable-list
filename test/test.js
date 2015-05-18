@@ -150,4 +150,10 @@ describe("List", function() {
             assert.equal(it.next().value, 0);
         });
     });
+
+    describe("#toString()", function() {
+        it("should return toString representation of List", function() {
+            assert.equal(new List(0, 1, 2), "(0 1 2)");
+        });
+    });
 });
