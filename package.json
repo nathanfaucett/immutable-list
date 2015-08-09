@@ -7,6 +7,12 @@
     "url": "https://github.com/nathanfaucett/immutable-list.git"
   },
   "main": "src/index.js",
+  "scripts": {
+    "test": "npm run test-node",
+    "test-node": "node ./test | ./node_modules/.bin/tap-spec",
+    "test-node-raw": "node ./test",
+    "test-browser-local": "zuul --local 8080 --ui tape -- ./test"
+  },
   "keywords": [
     "immutable-list",
     "immutable-list.js"
@@ -18,11 +24,14 @@
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-jsbeautifier": "^0.2.7",
-    "mocha": "^2.1.0"
+    "tap-spec": "^4.0.0",
+    "tape": "^4.0.0",
+    "zuul": "^3.0.0"
   },
   "dependencies": {
-    "fast_slice": "git://github.com/nathanfaucett/fast_slice",
-    "is_array_like": "git://github.com/nathanfaucett/is_array_like",
-    "is_equal": "git://github.com/nathanfaucett/is_equal"
+    "is_null": "git://github.com/nathanfaucett/is_null.git",
+    "fast_slice": "git://github.com/nathanfaucett/fast_slice.git",
+    "is_array_like": "git://github.com/nathanfaucett/is_array_like.git",
+    "is_equal": "git://github.com/nathanfaucett/is_equal.git"
   }
 }

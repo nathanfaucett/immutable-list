@@ -1,4 +1,5 @@
-var isArrayLike = require("is_array_like"),
+var isNull = require("is_null"),
+    isArrayLike = require("is_array_like"),
     fastSlice = require("fast_slice"),
     isEqual = require("is_equal");
 
@@ -12,6 +13,10 @@ module.exports = List;
 
 
 function List(value) {
+    if (!(this instanceof List)) {
+        throw new Error("List() must be called with new");
+    }
+
     this.__size = 0;
     this.__root = null;
     this.__tail = null;
@@ -78,7 +83,7 @@ function List_get(_this, index) {
     var size = _this.__size;
 
     if (index < 0 || index >= size) {
-        return undefined;
+        return null;
     } else if (index === 0) {
         return _this.__root;
     } else if (index === size - 1) {
@@ -91,10 +96,10 @@ function List_get(_this, index) {
 ListPrototype.get = function(index) {
     var node = List_get(this, index);
 
-    if (node !== undefined) {
-        return node.value;
-    } else {
+    if (isNull(node)) {
         return undefined;
+    } else {
+        return node.value;
     }
 };
 
@@ -110,7 +115,7 @@ function List_set(_this, node, index, value) {
     var list = new List(IS_FAST_CREATE),
         newNode = new Node(value, node.next),
         root = copyFromTo(_this.__root, node, newNode),
-        tail = node.next === null ? newNode : _this.__tail;
+        tail = isNull(node.next) ? newNode : _this.__tail;
 
     list.__size = _this.__size;
     list.__root = root;
@@ -122,14 +127,14 @@ function List_set(_this, node, index, value) {
 ListPrototype.set = function(index, value) {
     var node = List_get(this, index);
 
-    if (node !== undefined) {
+    if (isNull(node)) {
+        throw new Error("List set(index, value) index out of bounds");
+    } else {
         if (isEqual(node.value, value)) {
             return this;
         } else {
             return List_set(this, node, index, value);
         }
-    } else {
-        throw new Error("List set(index, value) index out of bounds");
     }
 };
 
@@ -165,7 +170,7 @@ function List_insert(_this, node, index, values) {
         tail = new Node(values[length - 1], node),
         first = insertCreateNodes(values, 0, length - 1, tail),
 
-        root = parent !== null ? copyFromTo(oldRoot, node, first) : first;
+        root = isNull(parent) ? first : copyFromTo(oldRoot, node, first);
 
     list.__size = _this.__size + length;
     list.__root = root;
@@ -177,16 +182,16 @@ function List_insert(_this, node, index, values) {
 ListPrototype.insert = function(index) {
     var node = List_get(this, index);
 
-    if (node !== undefined) {
-        return List_insert(this, node, index, fastSlice(arguments, 1));
-    } else {
+    if (isNull(node)) {
         throw new Error("List insert(index, value) index out of bounds");
+    } else {
+        return List_insert(this, node, index, fastSlice(arguments, 1));
     }
 };
 
 function findNext(node, count) {
 
-    while (count-- && node !== null) {
+    while (count-- && !isNull(node)) {
         node = node.next;
     }
 
@@ -197,7 +202,7 @@ function List_remove(_this, node, count) {
     var list = new List(IS_FAST_CREATE),
         next = findNext(node, count),
         root = copyFromTo(_this.__root, node, next),
-        tail = next !== null ? next : _this.__tail;
+        tail = isNull(next) ? _this.__tail : next;
 
     list.__size = _this.__size - count;
     list.__root = root;
@@ -214,10 +219,10 @@ ListPrototype.remove = function(index, count) {
     if (count > 0) {
         node = List_get(this, index);
 
-        if (node !== undefined) {
-            return List_remove(this, node, count);
-        } else {
+        if (isNull(node)) {
             throw new Error("List remove(index[, count=1]) index out of bounds");
+        } else {
+            return List_remove(this, node, count);
         }
     } else {
         return this;
@@ -226,18 +231,17 @@ ListPrototype.remove = function(index, count) {
 
 function List_conj(_this, args, length) {
     var list = new List(IS_FAST_CREATE),
-
         root = _this.__root,
         tail = _this.__tail,
         size = _this.__size,
         il = length - 1,
         i;
 
-    if (tail !== null) {
-        i = -1;
-    } else {
+    if (isNull(tail)) {
         i = 0;
         root = tail = new Node(args[i], null);
+    } else {
+        i = -1;
     }
 
     while (i++ < il) {
@@ -265,7 +269,7 @@ ListPrototype.pop = function() {
     var root = this.__root,
         list;
 
-    if (root === null) {
+    if (isNull(root)) {
         return this;
     } else {
         list = new List(IS_FAST_CREATE);
@@ -289,10 +293,10 @@ function pushCreateNodes(values, length, root) {
 }
 
 function copyNodes(node, last) {
-    if (node !== null) {
-        return new Node(node.value, copyNodes(node.next, last));
-    } else {
+    if (isNull(node)) {
         return last;
+    } else {
+        return new Node(node.value, copyNodes(node.next, last));
     }
 }
 
@@ -304,7 +308,7 @@ function List_push(_this, args, length) {
         tail = new Node(args[length - 1], null),
         first = length !== 1 ? pushCreateNodes(args, length - 1, tail) : tail,
 
-        root = oldRoot !== null ? copyNodes(oldRoot, first) : first;
+        root = isNull(oldRoot) ? first : copyNodes(oldRoot, first);
 
     list.__size = _this.__size + length;
     list.__root = root;
@@ -330,7 +334,7 @@ function List_iterator(_this) {
         next: function next() {
             var value;
 
-            if (node === null) {
+            if (isNull(node)) {
                 return {
                     done: true,
                     value: undefined
@@ -356,7 +360,7 @@ function List_iteratorReverse(_this) {
         next: function next() {
             var value;
 
-            if (node === null) {
+            if (isNull(node)) {
                 return {
                     done: true,
                     value: undefined
@@ -391,7 +395,7 @@ ListPrototype.toArray = function() {
         node = this.__root,
         i = 0;
 
-    while (node !== null) {
+    while (!isNull(node)) {
         array[i++] = node.value;
         node = node.next;
     }
@@ -412,7 +416,7 @@ List.equal = function(a, b) {
         a = a.__root;
         b = b.__root;
 
-        while (a !== null && b !== null) {
+        while (!(isNull(a) || isNull(b))) {
             if (isEqual(a.value, b.value)) {
                 a = a.next;
                 b = b.next;
