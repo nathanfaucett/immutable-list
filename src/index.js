@@ -87,13 +87,9 @@ if (Object.defineProperty) {
 ListPrototype.count = ListPrototype.size;
 
 function List_get(_this, index) {
-    var size = _this.__size;
-
-    if (index < 0 || index >= size) {
-        return null;
-    } else if (index === 0) {
+    if (index === 0) {
         return _this.__root;
-    } else if (index === size - 1) {
+    } else if (index === _this.__size - 1) {
         return _this.__tail;
     } else {
         return findNode(_this.__root, index);
@@ -101,12 +97,10 @@ function List_get(_this, index) {
 }
 
 ListPrototype.get = function(index) {
-    var node = List_get(this, index);
-
-    if (isNull(node)) {
+    if (index < 0 || index >= this.__size) {
         return undefined;
     } else {
-        return node.value;
+        return List_get(this, index).value;
     }
 };
 
@@ -154,11 +148,13 @@ function List_set(_this, node, index, value) {
 }
 
 ListPrototype.set = function(index, value) {
-    var node = List_get(this, index);
+    var node;
 
-    if (isNull(node)) {
+    if (index < 0 || index >= this.__size) {
         throw new Error("List set(index, value) index out of bounds");
     } else {
+        node = List_get(this, index);
+
         if (isEqual(node.value, value)) {
             return this;
         } else {
@@ -209,12 +205,10 @@ function List_insert(_this, node, index, values) {
 }
 
 ListPrototype.insert = function(index) {
-    var node = List_get(this, index);
-
-    if (isNull(node)) {
+    if (index < 0 || index >= this.__size) {
         throw new Error("List insert(index, value) index out of bounds");
     } else {
-        return List_insert(this, node, index, fastSlice(arguments, 1));
+        return List_insert(this, List_get(this, index), index, fastSlice(arguments, 1));
     }
 };
 
@@ -241,16 +235,17 @@ function List_remove(_this, node, count) {
 }
 
 ListPrototype.remove = function(index, count) {
-    var node;
+    var size = this.__size,
+        node;
 
     count = count || 1;
 
-    if (count > 0) {
+    if (index < 0 || index >= size) {
+        throw new Error("List remove(index[, count=1]) index out of bounds");
+    } else if (count > 0) {
         node = List_get(this, index);
 
-        if (isNull(node)) {
-            throw new Error("List remove(index[, count=1]) index out of bounds");
-        } else if (node === this.__root && count === this.__size) {
+        if (node === this.__root && count === size) {
             return emptyList;
         } else {
             return List_remove(this, node, count);
