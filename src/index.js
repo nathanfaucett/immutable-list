@@ -74,18 +74,17 @@ List.isList = function(value) {
 
 ListPrototype.__List__ = true;
 
-ListPrototype.count = function() {
+ListPrototype.size = function() {
     return this.__size;
 };
 
 if (Object.defineProperty) {
-    Object.defineProperty(ListPrototype, "size", {
-        get: ListPrototype.count
-    });
     Object.defineProperty(ListPrototype, "length", {
-        get: ListPrototype.count
+        get: ListPrototype.size
     });
 }
+
+ListPrototype.count = ListPrototype.size;
 
 function List_get(_this, index) {
     var size = _this.__size;
@@ -316,7 +315,7 @@ function List_pop(_this) {
         }
     }
 
-    list.__size = _this.size - 1;
+    list.__size = _this.__size - 1;
     list.__root = newRoot;
     list.__tail = newTail;
 

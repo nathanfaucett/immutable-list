@@ -12,12 +12,11 @@ tape("List() should create new list from passed arguments", function(assert) {
     assert.end();
 });
 
-tape("List count() should return size of the List", function(assert) {
-    assert.equal(new List().count(), 0);
-    assert.equal(new List([1, 2]).count(), 2);
-    assert.equal(new List([1, 2], 3).count(), 2);
-    assert.equal(new List(1).count(), 1);
-
+tape("List size() should return size of the List", function(assert) {
+    assert.equal(new List().size(), 0);
+    assert.equal(new List([1, 2]).size(), 2);
+    assert.equal(new List([1, 2], 3).size(), 2);
+    assert.equal(new List(1).size(), 1);
     assert.end();
 });
 
@@ -52,9 +51,9 @@ tape("List pop() should return list without last element of list", function(asse
 
     assert.deepEqual(b.toArray(), [1, 2]);
     assert.deepEqual(c.toArray(), [1]);
-    assert.equal(b.size, 2);
-    assert.equal(c.size, 1);
-    assert.equal(d.size, 0);
+    assert.equal(b.size(), 2);
+    assert.equal(c.size(), 1);
+    assert.equal(d.size(), 0);
     assert.equal(d, e);
 
     assert.end();
@@ -69,9 +68,9 @@ tape("List shift() should return list without first element of list", function(a
 
     assert.deepEqual(b.toArray(), [2, 3]);
     assert.deepEqual(c.toArray(), [3]);
-    assert.equal(b.size, 2);
-    assert.equal(c.size, 1);
-    assert.equal(d.size, 0);
+    assert.equal(b.size(), 2);
+    assert.equal(c.size(), 1);
+    assert.equal(d.size(), 0);
     assert.equal(d, e);
 
     assert.end();
