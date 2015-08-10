@@ -4,7 +4,7 @@ var isNull = require("is_null"),
     isEqual = require("is_equal");
 
 
-var IS_FAST_CREATE = {},
+var INTERNAL_CREATE = {},
     ListPrototype = List.prototype,
     ITERATOR_SYMBOL = typeof(Symbol) === "function" ? Symbol.iterator : false;
 
@@ -21,7 +21,7 @@ function List(value) {
     this.__root = null;
     this.__tail = null;
 
-    if (value !== IS_FAST_CREATE) {
+    if (value !== INTERNAL_CREATE) {
         List_createList(this, value, arguments);
     }
 }
@@ -57,7 +57,7 @@ function List_fromJS(_this, values) {
 }
 
 List.of = function(value) {
-    return List_createList(new List(IS_FAST_CREATE), value, arguments);
+    return List_createList(new List(INTERNAL_CREATE), value, arguments);
 };
 
 List.isList = function(value) {
@@ -107,12 +107,22 @@ ListPrototype.nth = ListPrototype.get;
 
 ListPrototype.first = function() {
     var node = this.__root;
-    return isNull(node) ? undefined : node.value;
+
+    if (isNull(node)) {
+        return undefined;
+    } else {
+        return node.value;
+    }
 };
 
 ListPrototype.last = function() {
     var node = this.__tail;
-    return isNull(node) ? undefined : node.value;
+
+    if (isNull(node)) {
+        return undefined;
+    } else {
+        return node.value;
+    }
 };
 
 function copyFromTo(from, to, newNode) {
@@ -124,7 +134,7 @@ function copyFromTo(from, to, newNode) {
 }
 
 function List_set(_this, node, index, value) {
-    var list = new List(IS_FAST_CREATE),
+    var list = new List(INTERNAL_CREATE),
         newNode = new Node(value, node.next),
         root = copyFromTo(_this.__root, node, newNode),
         tail = isNull(node.next) ? newNode : _this.__tail;
@@ -172,7 +182,7 @@ function insertCreateNodes(values, index, length, root) {
 }
 
 function List_insert(_this, node, index, values) {
-    var list = new List(IS_FAST_CREATE),
+    var list = new List(INTERNAL_CREATE),
 
         oldRoot = _this.__root,
         parent = oldRoot !== node ? findParent(oldRoot, node) : null,
@@ -211,7 +221,7 @@ function findNext(node, count) {
 }
 
 function List_remove(_this, node, count) {
-    var list = new List(IS_FAST_CREATE),
+    var list = new List(INTERNAL_CREATE),
         next = findNext(node, count),
         root = copyFromTo(_this.__root, node, next),
         tail = isNull(next) ? _this.__tail : next;
@@ -242,7 +252,7 @@ ListPrototype.remove = function(index, count) {
 };
 
 function List_conj(_this, args, length) {
-    var list = new List(IS_FAST_CREATE),
+    var list = new List(INTERNAL_CREATE),
         root = _this.__root,
         tail = _this.__tail,
         size = _this.__size,
@@ -280,7 +290,7 @@ ListPrototype.conj = function() {
 ListPrototype.unshift = ListPrototype.conj;
 
 function List_pop(_this) {
-    var list = new List(IS_FAST_CREATE),
+    var list = new List(INTERNAL_CREATE),
         root = _this.__root,
         tail = _this.__tail,
         newRoot = new Node(root.value, null),
@@ -309,14 +319,14 @@ ListPrototype.pop = function() {
     if (size === 0) {
         return this;
     } else if (size === 1) {
-        return new List(IS_FAST_CREATE);
+        return new List(INTERNAL_CREATE);
     } else {
         return List_pop(this);
     }
 };
 
 function List_shift(_this) {
-    var list = new List(IS_FAST_CREATE);
+    var list = new List(INTERNAL_CREATE);
 
     list.__size = _this.__size - 1;
     list.__root = _this.__root.next;
@@ -331,7 +341,7 @@ ListPrototype.shift = function() {
     if (size === 0) {
         return this;
     } else if (size === 1) {
-        return new List(IS_FAST_CREATE);
+        return new List(INTERNAL_CREATE);
     } else {
         return List_shift(this);
     }
@@ -356,7 +366,7 @@ function copyNodes(node, last) {
 }
 
 function List_push(_this, args, length) {
-    var list = new List(IS_FAST_CREATE),
+    var list = new List(INTERNAL_CREATE),
 
         oldRoot = _this.__root,
 
