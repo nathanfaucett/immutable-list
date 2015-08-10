@@ -41,19 +41,19 @@ function List_createList(_this, value, args) {
     return _this;
 }
 
-function List_fromJS(list, args) {
-    var length = args.length,
+function List_fromJS(_this, values) {
+    var length = values.length,
         i = length - 1,
-        tail = new Node(args[i], null),
+        tail = new Node(values[i], null),
         root = tail;
 
     while (i--) {
-        root = new Node(args[i], root);
+        root = new Node(values[i], root);
     }
 
-    list.__size = length;
-    list.__root = root;
-    list.__tail = tail;
+    _this.__size = length;
+    _this.__root = root;
+    _this.__tail = tail;
 }
 
 List.of = function(value) {
@@ -101,6 +101,18 @@ ListPrototype.get = function(index) {
     } else {
         return node.value;
     }
+};
+
+ListPrototype.nth = ListPrototype.get;
+
+ListPrototype.first = function() {
+    var node = this.__root;
+    return isNull(node) ? undefined : node.value;
+};
+
+ListPrototype.last = function() {
+    var node = this.__tail;
+    return isNull(node) ? undefined : node.value;
 };
 
 function copyFromTo(from, to, newNode) {
@@ -265,20 +277,63 @@ ListPrototype.conj = function() {
     }
 };
 
+ListPrototype.unshift = ListPrototype.conj;
+
+function List_pop(_this) {
+    var list = new List(IS_FAST_CREATE),
+        root = _this.__root,
+        tail = _this.__tail,
+        newRoot = new Node(root.value, null),
+        newTail = newRoot;
+
+    while (true) {
+        root = root.next;
+
+        if (isNull(root) || root === tail) {
+            break;
+        } else {
+            newTail = newTail.next = new Node(root.value, null);
+        }
+    }
+
+    list.__size = _this.size - 1;
+    list.__root = newRoot;
+    list.__tail = newTail;
+
+    return list;
+}
+
 ListPrototype.pop = function() {
-    var root = this.__root,
-        list;
+    var size = this.__size;
 
-    if (isNull(root)) {
+    if (size === 0) {
         return this;
+    } else if (size === 1) {
+        return new List(IS_FAST_CREATE);
     } else {
-        list = new List(IS_FAST_CREATE);
+        return List_pop(this);
+    }
+};
 
-        list.__size = this.__size - 1;
-        list.__root = root.next;
-        list.__tail = this.__tail;
+function List_shift(_this) {
+    var list = new List(IS_FAST_CREATE);
 
-        return list;
+    list.__size = _this.__size - 1;
+    list.__root = _this.__root.next;
+    list.__tail = _this.__tail;
+
+    return list;
+}
+
+ListPrototype.shift = function() {
+    var size = this.__size;
+
+    if (size === 0) {
+        return this;
+    } else if (size === 1) {
+        return new List(IS_FAST_CREATE);
+    } else {
+        return List_shift(this);
     }
 };
 

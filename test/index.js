@@ -43,17 +43,36 @@ tape("List push(...values) should push values to end of list", function(assert) 
     assert.end();
 });
 
-tape("List pop(...values) should return list without first element of list", function(assert) {
-    var a = new List(1, 2),
+tape("List pop() should return list without last element of list", function(assert) {
+    var a = new List(1, 2, 3),
         b = a.pop(),
         c = b.pop(),
-        d = c.pop();
+        d = c.pop(),
+        e = d.pop();
 
-    assert.deepEqual(b.toArray(), [2]);
-    assert.deepEqual(c.toArray(), []);
-    assert.equal(b.size, 1);
-    assert.equal(c.size, 0);
-    assert.equal(c, d);
+    assert.deepEqual(b.toArray(), [1, 2]);
+    assert.deepEqual(c.toArray(), [1]);
+    assert.equal(b.size, 2);
+    assert.equal(c.size, 1);
+    assert.equal(d.size, 0);
+    assert.equal(d, e);
+
+    assert.end();
+});
+
+tape("List shift() should return list without first element of list", function(assert) {
+    var a = new List(1, 2, 3),
+        b = a.shift(),
+        c = b.shift(),
+        d = c.shift(),
+        e = d.shift();
+
+    assert.deepEqual(b.toArray(), [2, 3]);
+    assert.deepEqual(c.toArray(), [3]);
+    assert.equal(b.size, 2);
+    assert.equal(c.size, 1);
+    assert.equal(d.size, 0);
+    assert.equal(d, e);
 
     assert.end();
 });
@@ -66,6 +85,18 @@ tape("List get(index : Int) should return nth element in list undefined if out o
     assert.equal(list.get(2), 3);
     assert.equal(list.get(3), undefined);
 
+    assert.end();
+});
+
+tape("List first() should return first element from list", function(assert) {
+    var a = new List(1, 2, 3);
+    assert.equal(a.first(), 1);
+    assert.end();
+});
+
+tape("List last() should return last element from list", function(assert) {
+    var a = new List(1, 2, 3);
+    assert.equal(a.last(), 3);
     assert.end();
 });
 
