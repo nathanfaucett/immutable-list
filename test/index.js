@@ -139,7 +139,8 @@ tape("List remove(index : Int[, count = 1 : int]) should return new List with th
         b = a.remove(0),
         c = a.remove(1),
         d = a.remove(2),
-        e = a.remove(0, 2);
+        e = a.remove(0, 2),
+        f = e.remove(0);
 
     assert.equal(b.__root, a.__root.next);
     assert.equal(c.__root.next, a.__root.next.next);
@@ -149,6 +150,7 @@ tape("List remove(index : Int[, count = 1 : int]) should return new List with th
     assert.deepEqual(c.toArray(), [0, 2]);
     assert.deepEqual(d.toArray(), [0, 1]);
     assert.deepEqual(e.toArray(), [2]);
+    assert.deepEqual(f.toArray(), []);
 
     assert.end();
 });

@@ -6,7 +6,8 @@ var isNull = require("is_null"),
 
 var INTERNAL_CREATE = {},
     ListPrototype = List.prototype,
-    ITERATOR_SYMBOL = typeof(Symbol) === "function" ? Symbol.iterator : false;
+    ITERATOR_SYMBOL = typeof(Symbol) === "function" ? Symbol.iterator : false,
+    emptyList = new List(INTERNAL_CREATE);
 
 
 module.exports = List;
@@ -22,7 +23,7 @@ function List(value) {
     this.__tail = null;
 
     if (value !== INTERNAL_CREATE) {
-        List_createList(this, value, arguments);
+        return List_createList(this, value, arguments);
     }
 }
 
@@ -30,15 +31,16 @@ function List_createList(_this, value, args) {
     var length = args.length;
 
     if (isArrayLike(value) && length === 1) {
-        List_fromJS(_this, value);
+        return List_fromJS(_this, value);
     } else if (length > 1) {
-        List_fromJS(_this, args);
+        return List_fromJS(_this, args);
     } else if (length === 1) {
-        _this.__root = this.__tail = new Node(value, null);
+        _this.__root = _this.__tail = new Node(value, null);
         _this.__size = 1;
+        return _this;
+    } else {
+        return emptyList;
     }
-
-    return _this;
 }
 
 function List_fromJS(_this, values) {
@@ -54,10 +56,16 @@ function List_fromJS(_this, values) {
     _this.__size = length;
     _this.__root = root;
     _this.__tail = tail;
+
+    return _this;
 }
 
 List.of = function(value) {
-    return List_createList(new List(INTERNAL_CREATE), value, arguments);
+    if (arguments.length > 0) {
+        return List_createList(new List(INTERNAL_CREATE), value, arguments);
+    } else {
+        return emptyList;
+    }
 };
 
 List.isList = function(value) {
@@ -243,6 +251,8 @@ ListPrototype.remove = function(index, count) {
 
         if (isNull(node)) {
             throw new Error("List remove(index[, count=1]) index out of bounds");
+        } else if (node === this.__root && count === this.__size) {
+            return emptyList;
         } else {
             return List_remove(this, node, count);
         }
@@ -319,7 +329,7 @@ ListPrototype.pop = function() {
     if (size === 0) {
         return this;
     } else if (size === 1) {
-        return new List(INTERNAL_CREATE);
+        return emptyList;
     } else {
         return List_pop(this);
     }
@@ -341,7 +351,7 @@ ListPrototype.shift = function() {
     if (size === 0) {
         return this;
     } else if (size === 1) {
-        return new List(INTERNAL_CREATE);
+        return emptyList;
     } else {
         return List_shift(this);
     }
