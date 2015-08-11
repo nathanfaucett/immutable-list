@@ -172,6 +172,7 @@ tape("List iterator([reverse = false : Boolean]) (reverse = false) should return
     assert.equal(it.next().value, 0);
     assert.equal(it.next().value, 1);
     assert.equal(it.next().value, 2);
+    assert.equal(it.next().done, true);
 
     assert.end();
 });
@@ -183,6 +184,7 @@ tape("List iterator([reverse = false : Boolean]) (reverse = true) should return 
     assert.equal(it.next().value, 2);
     assert.equal(it.next().value, 1);
     assert.equal(it.next().value, 0);
+    assert.equal(it.next().done, true);
 
     assert.end();
 });

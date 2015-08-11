@@ -24,6 +24,8 @@ function List(value) {
 
     if (value !== INTERNAL_CREATE) {
         return List_createList(this, value, arguments);
+    } else {
+        return this;
     }
 }
 
@@ -396,6 +398,11 @@ ListPrototype.push = function() {
     }
 };
 
+function ListIteratorValue(done, value) {
+    this.done = done;
+    this.value = value;
+}
+
 function List_iterator(_this) {
     var node = _this.__root;
 
@@ -404,18 +411,12 @@ function List_iterator(_this) {
             var value;
 
             if (isNull(node)) {
-                return {
-                    done: true,
-                    value: undefined
-                };
+                return new ListIteratorValue(true, undefined);
             } else {
                 value = node.value;
                 node = node.next;
 
-                return {
-                    done: false,
-                    value: value
-                };
+                return new ListIteratorValue(false, value);
             }
         }
     };
@@ -430,18 +431,12 @@ function List_iteratorReverse(_this) {
             var value;
 
             if (isNull(node)) {
-                return {
-                    done: true,
-                    value: undefined
-                };
+                return new ListIteratorValue(true, undefined);
             } else {
                 value = node.value;
-                node = root !== node ? findParent(root, node) : root;
+                node = root !== node ? findParent(root, node) : null;
 
-                return {
-                    done: false,
-                    value: value
-                };
+                return new ListIteratorValue(false, value);
             }
         }
     };
@@ -479,7 +474,9 @@ ListPrototype.toString = function() {
 ListPrototype.inspect = ListPrototype.toString;
 
 List.equal = function(a, b) {
-    if (!a || !b || a.__size !== b.__size) {
+    if (a === b) {
+        return true;
+    } else if (!a || !b || a.__size !== b.__size) {
         return false;
     } else {
         a = a.__root;
