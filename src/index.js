@@ -403,43 +403,43 @@ function ListIteratorValue(done, value) {
     this.value = value;
 }
 
+function ListIterator(next) {
+    this.next = next;
+}
+
 function List_iterator(_this) {
     var node = _this.__root;
 
-    return {
-        next: function next() {
-            var value;
+    return new ListIterator(function next() {
+        var value;
 
-            if (isNull(node)) {
-                return new ListIteratorValue(true, undefined);
-            } else {
-                value = node.value;
-                node = node.next;
+        if (isNull(node)) {
+            return new ListIteratorValue(true, undefined);
+        } else {
+            value = node.value;
+            node = node.next;
 
-                return new ListIteratorValue(false, value);
-            }
+            return new ListIteratorValue(false, value);
         }
-    };
+    });
 }
 
 function List_iteratorReverse(_this) {
     var root = _this.__root,
         node = _this.__tail;
 
-    return {
-        next: function next() {
-            var value;
+    return new ListIterator(function next() {
+        var value;
 
-            if (isNull(node)) {
-                return new ListIteratorValue(true, undefined);
-            } else {
-                value = node.value;
-                node = root !== node ? findParent(root, node) : null;
+        if (isNull(node)) {
+            return new ListIteratorValue(true, undefined);
+        } else {
+            value = node.value;
+            node = root !== node ? findParent(root, node) : null;
 
-                return new ListIteratorValue(false, value);
-            }
+            return new ListIteratorValue(false, value);
         }
-    };
+    });
 }
 
 ListPrototype.iterator = function(reverse) {
