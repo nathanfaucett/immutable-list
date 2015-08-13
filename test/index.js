@@ -20,7 +20,7 @@ tape("List size() should return size of the List", function(assert) {
     assert.end();
 });
 
-tape("List conj(...values) should add values to font of list", function(assert) {
+tape("List conj(...values) should add values to front of list", function(assert) {
     var a = new List(1, 2),
         b = a.conj(0),
         c = a.conj(0, 1, 2);

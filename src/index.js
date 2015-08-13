@@ -257,23 +257,24 @@ ListPrototype.remove = function(index, count) {
     }
 };
 
-function List_conj(_this, args, length) {
+function List_conj(_this, values) {
     var list = new List(INTERNAL_CREATE),
         root = _this.__root,
         tail = _this.__tail,
         size = _this.__size,
+        length = values.length,
         il = length - 1,
         i;
 
     if (isNull(tail)) {
         i = 0;
-        root = tail = new Node(args[i], null);
+        root = tail = new Node(values[i], null);
     } else {
         i = -1;
     }
 
     while (i++ < il) {
-        root = new Node(args[i], root);
+        root = new Node(values[i], root);
     }
 
     list.__size = length + size;
@@ -284,10 +285,8 @@ function List_conj(_this, args, length) {
 }
 
 ListPrototype.conj = function() {
-    var length = arguments.length;
-
-    if (length !== 0) {
-        return List_conj(this, arguments, length);
+    if (arguments.length !== 0) {
+        return List_conj(this, arguments);
     } else {
         return this;
     }
