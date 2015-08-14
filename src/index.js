@@ -29,17 +29,19 @@ function List(value) {
     }
 }
 
-function List_createList(_this, value, args) {
-    var length = args.length;
+function List_createList(_this, value, values) {
+    var length = values.length;
 
-    if (isArrayLike(value) && length === 1) {
-        return List_fromJS(_this, value);
-    } else if (length > 1) {
-        return List_fromJS(_this, args);
+    if (length > 1) {
+        return List_fromJS(_this, values);
     } else if (length === 1) {
-        _this.__root = _this.__tail = new Node(value, null);
-        _this.__size = 1;
-        return _this;
+        if (isArrayLike(value)) {
+            return List_fromJS(_this, value.toArray ? value.toArray() : value);
+        } else {
+            _this.__root = _this.__tail = new Node(value, null);
+            _this.__size = 1;
+            return _this;
+        }
     } else {
         return emptyList;
     }
