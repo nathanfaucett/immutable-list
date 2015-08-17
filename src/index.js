@@ -1,5 +1,7 @@
 var isNull = require("is_null"),
+    isUndefined = require("is_undefined"),
     isArrayLike = require("is_array_like"),
+    fastBindThis = require("fast_bind_this"),
     fastSlice = require("fast_slice"),
     isEqual = require("is_equal");
 
@@ -454,6 +456,163 @@ ListPrototype.iterator = function(reverse) {
 if (ITERATOR_SYMBOL) {
     ListPrototype[ITERATOR_SYMBOL] = ListPrototype.iterator;
 }
+
+function List_every(_this, callback) {
+    var it = List_iterator(_this),
+        next = it.next(),
+        index = 0;
+
+    while (next.done === false) {
+        if (!callback(next.value, index, _this)) {
+            return false;
+        }
+        next = it.next();
+        index += 1;
+    }
+
+    return true;
+}
+
+ListPrototype.every = function(callback, thisArg) {
+    return List_every(this, isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
+};
+
+function List_filter(_this, callback) {
+    var it = List_iterator(_this),
+        results = [],
+        next = it.next(),
+        index = 0,
+        j = 0,
+        value;
+
+    while (next.done === false) {
+        value = next.value;
+
+        if (callback(value, index, _this)) {
+            results[j++] = value;
+        }
+
+        next = it.next();
+        index += 1;
+    }
+
+    return List.of(results);
+}
+
+ListPrototype.filter = function(callback, thisArg) {
+    return List_filter(this, isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
+};
+
+function List_forEach(_this, callback) {
+    var it = List_iterator(_this),
+        next = it.next(),
+        index = 0;
+
+    while (next.done === false) {
+        if (callback(next.value, index, _this) === false) {
+            break;
+        }
+        next = it.next();
+        index += 1;
+    }
+
+    return _this;
+}
+
+ListPrototype.forEach = function(callback, thisArg) {
+    return List_forEach(this, isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
+};
+
+ListPrototype.each = ListPrototype.forEach;
+
+function List_map(_this, callback) {
+    var it = List_iterator(_this),
+        next = it.next(),
+        results = new Array(_this.__size),
+        index = 0;
+
+    while (next.done === false) {
+        results[index] = callback(next.value, index, _this);
+        next = it.next();
+        index += 1;
+    }
+
+    return List.of(results);
+}
+
+ListPrototype.map = function(callback, thisArg) {
+    return List_map(this, isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
+};
+
+function List_reduce(_this, callback, initialValue) {
+    var it = List_iterator(_this),
+        next = it.next(),
+        value = initialValue,
+        index = 0;
+
+    if (isUndefined(value)) {
+        value = next.value;
+        next = it.next();
+        index = 1;
+    }
+
+    while (next.done === false) {
+        value = callback(value, next.value, index, _this);
+        next = it.next();
+        index += 1;
+    }
+
+    return value;
+}
+
+ListPrototype.reduce = function(callback, initialValue, thisArg) {
+    return List_reduce(this, isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 4), initialValue);
+};
+
+function List_reduceRight(_this, callback, initialValue) {
+    var it = List_iteratorReverse(_this),
+        next = it.next(),
+        value = initialValue,
+        index = _this.__size;
+
+    if (isUndefined(value)) {
+        value = next.value;
+        next = it.next();
+        index -= 1;
+    }
+
+    while (next.done === false) {
+        index -= 1;
+        value = callback(value, next.value, index, _this);
+        next = it.next();
+    }
+
+    return value;
+}
+
+ListPrototype.reduceRight = function(callback, initialValue, thisArg) {
+    return List_reduceRight(this, isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 4), initialValue);
+};
+
+function List_some(_this, callback) {
+    var it = List_iterator(_this),
+        next = it.next(),
+        index = 0;
+
+    while (next.done === false) {
+        if (callback(next.value, index, _this)) {
+            return true;
+        }
+        next = it.next();
+        index += 1;
+    }
+
+    return false;
+}
+
+ListPrototype.some = function(callback, thisArg) {
+    return List_some(this, isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
+};
 
 ListPrototype.toArray = function() {
     var array = new Array(this.__size),
