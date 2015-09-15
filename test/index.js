@@ -215,40 +215,52 @@ tape("List filter(callback[, thisArg])", function(assert) {
 });
 
 tape("List forEach(callback[, thisArg])", function(assert) {
-    var count = 0;
+    var count = 0,
+        indices = [];
 
-    List.of([0, 1, 2, 3, 4]).forEach(function() {
+    List.of([0, 1, 2, 3, 4]).forEach(function(value, index) {
+        indices[indices.length] = index;
         count += 1;
     });
+    assert.deepEquals(indices, [0, 1, 2, 3, 4]);
     assert.equals(count, 5);
 
     count = 0;
-    List.of([0, 1, 2, 3, 4]).forEach(function(value) {
+    indices.length = 0;
+    List.of([0, 1, 2, 3, 4]).forEach(function(value, index) {
+        indices[indices.length] = index;
         count += 1;
         if (value === 2) {
             return false;
         }
     });
+    assert.deepEquals(indices, [0, 1, 2]);
     assert.equals(count, 3);
 
     assert.end();
 });
 
 tape("List forEachRight(callback[, thisArg])", function(assert) {
-    var count = 0;
+    var count = 0,
+        indices = [];
 
-    List.of([0, 1, 2, 3, 4]).forEachRight(function() {
+    List.of([0, 1, 2, 3, 4]).forEachRight(function(value, index) {
+        indices[indices.length] = index;
         count += 1;
     });
+    assert.deepEquals(indices, [4, 3, 2, 1, 0]);
     assert.equals(count, 5);
 
     count = 0;
-    List.of([0, 1, 2, 3, 4]).forEachRight(function(value) {
+    indices.length = 0;
+    List.of([0, 1, 2, 3, 4]).forEachRight(function(value, index) {
+        indices[indices.length] = index;
         count += 1;
         if (value === 2) {
             return false;
         }
     });
+    assert.deepEquals(indices, [4, 3, 2]);
     assert.equals(count, 3);
 
     assert.end();

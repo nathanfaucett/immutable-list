@@ -356,6 +356,8 @@ ListPrototype.shift = function() {
     }
 };
 
+ListPrototype.rest = ListPrototype.shift;
+
 function pushCreateNodes(values, length, root) {
     var i = length;
 
