@@ -234,6 +234,26 @@ tape("List forEach(callback[, thisArg])", function(assert) {
     assert.end();
 });
 
+tape("List forEachRight(callback[, thisArg])", function(assert) {
+    var count = 0;
+
+    List.of([0, 1, 2, 3, 4]).forEachRight(function() {
+        count += 1;
+    });
+    assert.equals(count, 5);
+
+    count = 0;
+    List.of([0, 1, 2, 3, 4]).forEachRight(function(value) {
+        count += 1;
+        if (value === 2) {
+            return false;
+        }
+    });
+    assert.equals(count, 3);
+
+    assert.end();
+});
+
 tape("List map(callback[, thisArg])", function(assert) {
     assert.deepEquals(
         List.of([0, 1, 2, 3, 4]).map(function(value, index) {

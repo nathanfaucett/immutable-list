@@ -522,6 +522,27 @@ ListPrototype.forEach = function(callback, thisArg) {
 
 ListPrototype.each = ListPrototype.forEach;
 
+function List_forEachRight(_this, it, callback) {
+    var next = it.next(),
+        index = _this.__size;
+
+    while (next.done === false) {
+        index -= 1;
+        if (callback(next.value, index, _this) === false) {
+            break;
+        }
+        next = it.next();
+    }
+
+    return _this;
+}
+
+ListPrototype.forEachRight = function(callback, thisArg) {
+    return List_forEachRight(this, List_iteratorReverse(this), isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
+};
+
+ListPrototype.eachRight = ListPrototype.forEachRight;
+
 function List_map(_this, it, callback) {
     var next = it.next(),
         results = new Array(_this.__size),
