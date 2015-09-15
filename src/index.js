@@ -457,9 +457,8 @@ if (ITERATOR_SYMBOL) {
     ListPrototype[ITERATOR_SYMBOL] = ListPrototype.iterator;
 }
 
-function List_every(_this, callback) {
-    var it = List_iterator(_this),
-        next = it.next(),
+function List_every(_this, it, callback) {
+    var next = it.next(),
         index = 0;
 
     while (next.done === false) {
@@ -474,12 +473,11 @@ function List_every(_this, callback) {
 }
 
 ListPrototype.every = function(callback, thisArg) {
-    return List_every(this, isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
+    return List_every(this, List_iterator(this), isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
 };
 
-function List_filter(_this, callback) {
-    var it = List_iterator(_this),
-        results = [],
+function List_filter(_this, it, callback) {
+    var results = [],
         next = it.next(),
         index = 0,
         j = 0,
@@ -500,12 +498,11 @@ function List_filter(_this, callback) {
 }
 
 ListPrototype.filter = function(callback, thisArg) {
-    return List_filter(this, isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
+    return List_filter(this, List_iterator(this), isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
 };
 
-function List_forEach(_this, callback) {
-    var it = List_iterator(_this),
-        next = it.next(),
+function List_forEach(_this, it, callback) {
+    var next = it.next(),
         index = 0;
 
     while (next.done === false) {
@@ -520,14 +517,13 @@ function List_forEach(_this, callback) {
 }
 
 ListPrototype.forEach = function(callback, thisArg) {
-    return List_forEach(this, isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
+    return List_forEach(this, List_iterator(this), isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
 };
 
 ListPrototype.each = ListPrototype.forEach;
 
-function List_map(_this, callback) {
-    var it = List_iterator(_this),
-        next = it.next(),
+function List_map(_this, it, callback) {
+    var next = it.next(),
         results = new Array(_this.__size),
         index = 0;
 
@@ -541,12 +537,11 @@ function List_map(_this, callback) {
 }
 
 ListPrototype.map = function(callback, thisArg) {
-    return List_map(this, isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
+    return List_map(this, List_iterator(this), isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
 };
 
-function List_reduce(_this, callback, initialValue) {
-    var it = List_iterator(_this),
-        next = it.next(),
+function List_reduce(_this, it, callback, initialValue) {
+    var next = it.next(),
         value = initialValue,
         index = 0;
 
@@ -566,12 +561,11 @@ function List_reduce(_this, callback, initialValue) {
 }
 
 ListPrototype.reduce = function(callback, initialValue, thisArg) {
-    return List_reduce(this, isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 4), initialValue);
+    return List_reduce(this, List_iterator(this), isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 4), initialValue);
 };
 
-function List_reduceRight(_this, callback, initialValue) {
-    var it = List_iteratorReverse(_this),
-        next = it.next(),
+function List_reduceRight(_this, it, callback, initialValue) {
+    var next = it.next(),
         value = initialValue,
         index = _this.__size;
 
@@ -591,12 +585,11 @@ function List_reduceRight(_this, callback, initialValue) {
 }
 
 ListPrototype.reduceRight = function(callback, initialValue, thisArg) {
-    return List_reduceRight(this, isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 4), initialValue);
+    return List_reduceRight(this, List_iteratorReverse(this), isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 4), initialValue);
 };
 
-function List_some(_this, callback) {
-    var it = List_iterator(_this),
-        next = it.next(),
+function List_some(_this, it, callback) {
+    var next = it.next(),
         index = 0;
 
     while (next.done === false) {
@@ -611,7 +604,7 @@ function List_some(_this, callback) {
 }
 
 ListPrototype.some = function(callback, thisArg) {
-    return List_some(this, isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
+    return List_some(this, List_iterator(this), isUndefined(thisArg) ? callback : fastBindThis(callback, thisArg, 3));
 };
 
 ListPrototype.toArray = function() {
