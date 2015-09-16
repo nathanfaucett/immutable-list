@@ -3,6 +3,7 @@ var isNull = require("is_null"),
     isArrayLike = require("is_array_like"),
     fastBindThis = require("fast_bind_this"),
     fastSlice = require("fast_slice"),
+    defineProperty = require("define_property"),
     isEqual = require("is_equal");
 
 
@@ -84,8 +85,8 @@ ListPrototype.size = function() {
     return this.__size;
 };
 
-if (Object.defineProperty) {
-    Object.defineProperty(ListPrototype, "length", {
+if (defineProperty.hasGettersSetters) {
+    defineProperty(ListPrototype, "length", {
         get: ListPrototype.size
     });
 }
