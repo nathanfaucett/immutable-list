@@ -9,7 +9,11 @@ var isNull = require("is_null"),
 
 var INTERNAL_CREATE = {},
     ListPrototype = List.prototype,
-    ITERATOR_SYMBOL = typeof(Symbol) === "function" ? Symbol.iterator : false,
+
+    HAS_SYMBOL = typeof(Symbol) === "function",
+    ITERATOR_SYMBOL = HAS_SYMBOL ? Symbol.iterator : false,
+    IS_LIST = HAS_SYMBOL ? Symbol("List") : "__ImmutableList__",
+
     emptyList = new List(INTERNAL_CREATE);
 
 
@@ -76,10 +80,21 @@ List.of = function(value) {
 };
 
 List.isList = function(value) {
-    return value && value.__List__ === true;
+    return value && value[IS_LIST] === true;
 };
 
-ListPrototype.__List__ = true;
+if (HAS_SYMBOL) {
+    ListPrototype[IS_LIST] = true;
+} else if (Object.defineProperty) {
+    defineProperty(ListPrototype, IS_LIST, {
+        configurable: false,
+        enumerable: false,
+        writable: false,
+        value: true
+    });
+} else {
+    ListPrototype[IS_LIST] = true;
+}
 
 ListPrototype.size = function() {
     return this.__size;

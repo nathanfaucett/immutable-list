@@ -12,6 +12,16 @@ tape("List() should create new list from passed arguments", function(assert) {
     assert.end();
 });
 
+tape("List.isList(value) should return true if the object is a List", function(assert) {
+    var list = new List(0, 1, 2),
+        notList = [];
+
+    assert.equal(List.isList(list), true);
+    assert.equal(List.isList(notList), false);
+
+    assert.end();
+});
+
 tape("List size() should return size of the List", function(assert) {
     assert.equal(new List().size(), 0);
     assert.equal(new List([1, 2]).size(), 2);
