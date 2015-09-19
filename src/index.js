@@ -36,14 +36,31 @@ function List(value) {
     }
 }
 
-function List_createList(_this, value, values) {
-    var length = values.length;
+function List_fromArray(_this, array) {
+    var length = array.length,
+        i = length - 1,
+        tail = new Node(array[i], null),
+        root = tail;
+
+    while (i--) {
+        root = new Node(array[i], root);
+    }
+
+    _this.__size = length;
+    _this.__root = root;
+    _this.__tail = tail;
+
+    return _this;
+}
+
+function List_createList(_this, value, args) {
+    var length = args.length;
 
     if (length > 1) {
-        return List_fromJS(_this, values);
+        return List_fromArray(_this, args);
     } else if (length === 1) {
         if (isArrayLike(value)) {
-            return List_fromJS(_this, value.toArray ? value.toArray() : value);
+            return List_fromArray(_this, value.toArray ? value.toArray() : value);
         } else {
             _this.__root = _this.__tail = new Node(value, null);
             _this.__size = 1;
@@ -52,23 +69,6 @@ function List_createList(_this, value, values) {
     } else {
         return EMPTY_LIST;
     }
-}
-
-function List_fromJS(_this, values) {
-    var length = values.length,
-        i = length - 1,
-        tail = new Node(values[i], null),
-        root = tail;
-
-    while (i--) {
-        root = new Node(values[i], root);
-    }
-
-    _this.__size = length;
-    _this.__root = root;
-    _this.__tail = tail;
-
-    return _this;
 }
 
 List.of = function(value) {
