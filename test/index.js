@@ -109,6 +109,15 @@ tape("List last() should return last element from list", function(assert) {
     assert.end();
 });
 
+tape("List indexOf(value: Any) should return index of element from list", function(assert) {
+    var a = new List(1, 2, 3);
+    assert.equal(a.indexOf(1), 0);
+    assert.equal(a.indexOf(2), 1);
+    assert.equal(a.indexOf(3), 2);
+    assert.equal(a.indexOf(4), -1);
+    assert.end();
+});
+
 tape("List set(index : Int, value : Any) should return a new list with the updated element at index if value is not the same", function(assert) {
     var a = new List(0, 1, 2),
         b = a.set(0, 2),

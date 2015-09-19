@@ -148,6 +148,21 @@ ListPrototype.last = function() {
     }
 };
 
+ListPrototype.indexOf = function(value) {
+    var node = this.__root,
+        i = 0;
+
+    while (!isNull(node)) {
+        if (isEqual(node.value, value)) {
+            return i;
+        }
+        node = node.next;
+        i += 1;
+    }
+
+    return -1;
+};
+
 function copyFromTo(from, to, newNode) {
     if (from !== to) {
         return new Node(from.value, copyFromTo(from.next, to, newNode));
