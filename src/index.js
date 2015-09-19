@@ -14,7 +14,7 @@ var INTERNAL_CREATE = {},
     ITERATOR_SYMBOL = HAS_SYMBOL ? Symbol.iterator : false,
     IS_LIST = HAS_SYMBOL ? Symbol("List") : "__ImmutableList__",
 
-    emptyList = new List(INTERNAL_CREATE);
+    EMPTY_LIST = new List(INTERNAL_CREATE);
 
 
 module.exports = List;
@@ -50,7 +50,7 @@ function List_createList(_this, value, values) {
             return _this;
         }
     } else {
-        return emptyList;
+        return EMPTY_LIST;
     }
 }
 
@@ -75,7 +75,7 @@ List.of = function(value) {
     if (arguments.length > 0) {
         return List_createList(new List(INTERNAL_CREATE), value, arguments);
     } else {
-        return emptyList;
+        return EMPTY_LIST;
     }
 };
 
@@ -268,7 +268,7 @@ ListPrototype.remove = function(index, count) {
         node = List_get(this, index);
 
         if (node === this.__root && count === size) {
-            return emptyList;
+            return EMPTY_LIST;
         } else {
             return List_remove(this, node, count);
         }
@@ -344,7 +344,7 @@ ListPrototype.pop = function() {
     if (size === 0) {
         return this;
     } else if (size === 1) {
-        return emptyList;
+        return EMPTY_LIST;
     } else {
         return List_pop(this);
     }
@@ -366,7 +366,7 @@ ListPrototype.shift = function() {
     if (size === 0) {
         return this;
     } else if (size === 1) {
-        return emptyList;
+        return EMPTY_LIST;
     } else {
         return List_shift(this);
     }
