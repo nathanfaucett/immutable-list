@@ -22,80 +22,80 @@ var a0 = a.push(3),
 
 ## Members
 
-### length -> Number
+#### length -> Number
     returns size of List, only available if Object.defineProperty is supported
 
 
 ## Static Functions
 
-### List.isList(value: Any) -> Boolean
+#### List.isList(value: Any) -> Boolean
     returns true if value is a list else false
 
-### List.of(...values) -> List
-    creates List from passed values same as new List(...values)
+#### List.of(...values: Array<Any>) -> List
+    creates List from passed values same as new List(...values: Array<Any>)
 
-### List.equal(a: List, b: List) -> Boolean
+#### List.equal(a: List, b: List) -> Boolean
     compares lists by values
 
 
 ## Functions
 
-### size() -> Number
+#### size() -> Number
     returns size of List
 
-### get(index: UnsignedNumber) -> Any
+#### get(index: UnsignedNumber) -> Any
     returns value at index
 
-### nth(index: UnsignedNumber) -> Any
+#### nth(index: UnsignedNumber) -> Any
     alias to get
 
-### first() -> Any
+#### first() -> Any
     returns first element
 
-### last() -> Any
+#### last() -> Any
     returns last element
 
-### indexOf(value: Any) -> Number
+#### indexOf(value: Any) -> Number
     returns index of value, -1 if not found
 
-### set(index: UnsignedNumber, value: Any) -> List
+#### set(index: UnsignedNumber, value: Any) -> List
     returns new List if value at index is different
 
-### insert(index: UnsignedNumber, ...values: Array<Any>) -> List
+#### insert(index: UnsignedNumber, ...values: Array<Any>) -> List
     returns new List with inserted values at index
 
-### remove(index: UnsignedNumber[, count = 1: UnsignedNumber]) -> List
+#### remove(index: UnsignedNumber[, count = 1: UnsignedNumber]) -> List
     returns new List without the values from index to index + count
 
-### conj(...values: Array<Any>) -> List
+#### conj(...values: Array<Any>) -> List
     returns new List with values pushed to front of the List
 
-### unshift(...values: Array<Any>) -> List
+#### unshift(...values: Array<Any>) -> List
     alias to conj
 
-### pop() -> List
+#### pop() -> List
     returns new List without last element
 
-### shift() -> List
+#### shift() -> List
     returns new List without first element
 
-### push(...values: Array<Any>) -> List
+#### push(...values: Array<Any>) -> List
     returns new List with values pushed to end of the List
 
-### iterator([reverse = false: Boolean]) -> Iterator
+#### iterator([reverse = false: Boolean]) -> Iterator
     returns Iterator
 
-### every, filter, forEach, forEachRight, map, reduce, reduceRight, some
+#### every, filter, forEach, forEachRight, map, reduce, reduceRight, some
     common Array methods
 
-### toArray() -> Array
+#### toArray() -> Array<Any>
     returns List elements in an Array
 
-### join([separator = " "]) -> Array
+#### join([separator = " "]) -> String
     join all elements of an List into a String
 
-### toString() -> Array
+#### toString() -> String
     String representation of List
 
-### equals(other: List) -> Array
+#### equals(other: List) -> Boolean
     compares this list to other list by values
