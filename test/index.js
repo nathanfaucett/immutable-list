@@ -339,7 +339,7 @@ tape("List join([separator = \" \"]) should join all elements of an List into a 
     assert.end();
 });
 
-tape("List toString() should return toString representation of List", function(assert) {
+tape("List toString() should return String representation of List", function(assert) {
     var list = new List(0, 1, 2);
     assert.equal(list.toString(), "(0 1 2)");
     assert.end();
