@@ -674,8 +674,30 @@ ListPrototype.toArray = function() {
     return array;
 };
 
+ListPrototype.join = function(separator) {
+    var result = "",
+        node = this.__root,
+        value;
+
+    separator = separator || " ";
+
+    while (true) {
+        value = node.value;
+        node = node.next;
+
+        if (isNull(node)) {
+            result += value;
+            break;
+        } else {
+            result += value + separator;
+        }
+    }
+
+    return result;
+};
+
 ListPrototype.toString = function() {
-    return "(" + this.toArray().join(" ") + ")";
+    return "(" + this.join() + ")";
 };
 
 ListPrototype.inspect = ListPrototype.toString;

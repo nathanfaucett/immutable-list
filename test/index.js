@@ -330,7 +330,17 @@ tape("List some(callback[, thisArg])", function(assert) {
     assert.end();
 });
 
+tape("List join([separator = \" \"]) should join all elements of an List into a String", function(assert) {
+    var list = new List(0, 1, 2);
+
+    assert.equal(list.join(), "0 1 2");
+    assert.equal(list.join(","), "0,1,2");
+    assert.equal(list.join(", "), "0, 1, 2");
+    assert.end();
+});
+
 tape("List toString() should return toString representation of List", function(assert) {
-    assert.equal((new List(0, 1, 2)).toString(), "(0 1 2)");
+    var list = new List(0, 1, 2);
+    assert.equal(list.toString(), "(0 1 2)");
     assert.end();
 });
