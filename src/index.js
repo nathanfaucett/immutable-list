@@ -35,6 +35,26 @@ function List(value) {
     }
 }
 
+function List_createList(_this, value, values) {
+    var length = values.length;
+
+    if (length > 1) {
+        return List_fromArray(_this, values);
+    } else if (length === 1) {
+        if (isList(value)) {
+            return value;
+        } else if (isArrayLike(value)) {
+            return List_fromArray(_this, value.toArray ? value.toArray() : value);
+        } else {
+            _this.__root = _this.__tail = new Node(value, null);
+            _this.__size = 1;
+            return _this;
+        }
+    } else {
+        return EMPTY_LIST;
+    }
+}
+
 function List_fromArray(_this, array) {
     var length = array.length,
         i = length - 1,
@@ -52,24 +72,6 @@ function List_fromArray(_this, array) {
     return _this;
 }
 
-function List_createList(_this, value, args) {
-    var length = args.length;
-
-    if (length > 1) {
-        return List_fromArray(_this, args);
-    } else if (length === 1) {
-        if (isArrayLike(value)) {
-            return List_fromArray(_this, value.toArray ? value.toArray() : value);
-        } else {
-            _this.__root = _this.__tail = new Node(value, null);
-            _this.__size = 1;
-            return _this;
-        }
-    } else {
-        return EMPTY_LIST;
-    }
-}
-
 List.of = function(value) {
     if (arguments.length > 0) {
         return List_createList(new List(INTERNAL_CREATE), value, arguments);
@@ -78,9 +80,11 @@ List.of = function(value) {
     }
 };
 
-List.isList = function(value) {
+function isList(value) {
     return value && value[IS_LIST] === true;
-};
+}
+
+List.isList = isList;
 
 defineProperty(ListPrototype, IS_LIST, {
     configurable: false,
@@ -400,13 +404,13 @@ function copyNodes(node, last) {
     }
 }
 
-function List_push(_this, args, length) {
+function List_push(_this, values, length) {
     var list = new List(INTERNAL_CREATE),
 
         oldRoot = _this.__root,
 
-        tail = new Node(args[length - 1], null),
-        first = length !== 1 ? pushCreateNodes(args, length - 1, tail) : tail,
+        tail = new Node(values[length - 1], null),
+        first = length !== 1 ? pushCreateNodes(values, length - 1, tail) : tail,
 
         root = isNull(oldRoot) ? first : copyNodes(oldRoot, first);
 
@@ -422,6 +426,46 @@ ListPrototype.push = function() {
 
     if (length !== 0) {
         return List_push(this, arguments, length);
+    } else {
+        return this;
+    }
+};
+
+function List_concat(a, b) {
+    var asize = a.__size,
+        bsize = b.__size,
+        root, tail, list;
+
+    if (asize === 0) {
+        return b;
+    } else if (bsize === 0) {
+        return a;
+    } else {
+        root = copyNodes(a.__root, b.__root);
+        tail = b.__tail;
+
+        list = new List(INTERNAL_CREATE);
+        list.__size = asize + bsize;
+        list.__root = root;
+        list.__tail = tail;
+        return list;
+    }
+}
+
+ListPrototype.concat = function() {
+    var length = arguments.length,
+        i, il, list;
+
+    if (length !== 0) {
+        i = -1;
+        il = length - 1;
+        list = this;
+
+        while (i++ < il) {
+            list = List_concat(list, arguments[i]);
+        }
+
+        return list;
     } else {
         return this;
     }

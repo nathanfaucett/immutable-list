@@ -82,6 +82,9 @@ var a0 = a.push(3),
 #### push(...values: Array<Any>) -> List
     returns new List with values pushed to end of the List
 
+#### concat(...lists: Array<List>) -> List
+    returns new List with values from lists pushed to end of the List
+
 #### iterator([reverse = false: Boolean]) -> Iterator
     returns Iterator
 

@@ -52,6 +52,19 @@ tape("List push(...values) should push values to end of list", function(assert) 
     assert.end();
 });
 
+tape("List concat(...lists) should concat Lists to end of list", function(assert) {
+    var a = new List(0, 1),
+        b = new List(2),
+        c = new List();
+
+    assert.deepEqual(a.concat(b).toArray(), [0, 1, 2]);
+    assert.deepEqual(a.concat(b, c).toArray(), [0, 1, 2]);
+    assert.deepEqual(a.concat(b, b).toArray(), [0, 1, 2, 2]);
+    assert.deepEqual(c.concat(b, a).toArray(), [2, 0, 1]);
+
+    assert.end();
+});
+
 tape("List pop() should return list without last element of list", function(assert) {
     var a = new List(1, 2, 3),
         b = a.pop(),
