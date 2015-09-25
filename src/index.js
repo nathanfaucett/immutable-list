@@ -8,12 +8,13 @@ var isNull = require("is_null"),
 
 
 var INTERNAL_CREATE = {},
-    ListPrototype = List.prototype,
 
     ITERATOR_SYMBOL = typeof(Symbol) === "function" ? Symbol.iterator : false,
     IS_LIST = "__ImmutableList__",
 
-    EMPTY_LIST = new List(INTERNAL_CREATE);
+    EMPTY_LIST = new List(INTERNAL_CREATE),
+
+    ListPrototype = List.prototype;
 
 
 module.exports = List;
@@ -34,6 +35,8 @@ function List(value) {
         return this;
     }
 }
+
+List.EMPTY = EMPTY_LIST;
 
 function List_createList(_this, value, values) {
     var length = values.length;
