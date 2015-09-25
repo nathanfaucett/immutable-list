@@ -105,6 +105,10 @@ if (defineProperty.hasGettersSetters) {
 
 ListPrototype.count = ListPrototype.size;
 
+ListPrototype.isEmpty = function() {
+    return this.__size === 0;
+};
+
 function List_get(_this, index) {
     if (index === 0) {
         return _this.__root;
