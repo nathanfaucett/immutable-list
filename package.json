@@ -23,21 +23,22 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "benchmark": "^1.0.0",
-    "mori": "^0.3.2",
     "grunt": "^0.4.5",
-    "grunt-contrib-jshint": "^0.10.0",
-    "grunt-jsbeautifier": "^0.2.7",
-    "tap-spec": "^4.0.0",
-    "tape": "^4.0.0",
-    "zuul": "^3.0.0"
+    "grunt-contrib-jshint": "^0.11.3",
+    "grunt-jsbeautifier": "^0.2.10",
+    "mori": "^0.3.2",
+    "tap-spec": "^4.1.0",
+    "tape": "^4.2.2",
+    "zuul": "^3.7.2"
   },
   "dependencies": {
     "define_property": "git://github.com/nathanfaucett/define_property.git",
-    "is_null": "git://github.com/nathanfaucett/is_null.git",
-    "is_undefined": "git://github.com/nathanfaucett/is_undefined.git",
     "fast_bind_this": "git://github.com/nathanfaucett/fast_bind_this.git",
     "fast_slice": "git://github.com/nathanfaucett/fast_slice.git",
+    "freeze": "git://github.com/nathanfaucett/freeze.git",
     "is_array_like": "git://github.com/nathanfaucett/is_array_like.git",
-    "is_equal": "git://github.com/nathanfaucett/is_equal.git"
+    "is_equal": "git://github.com/nathanfaucett/is_equal.git",
+    "is_null": "git://github.com/nathanfaucett/is_null.git",
+    "is_undefined": "git://github.com/nathanfaucett/is_undefined.git"
   }
 }

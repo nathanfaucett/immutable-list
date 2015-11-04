@@ -4,6 +4,7 @@ var isNull = require("is_null"),
     fastBindThis = require("fast_bind_this"),
     fastSlice = require("fast_slice"),
     defineProperty = require("define_property"),
+    freeze = require("freeze"),
     isEqual = require("is_equal");
 
 
@@ -36,7 +37,7 @@ function List(value) {
     }
 }
 
-List.EMPTY = EMPTY_LIST;
+List.EMPTY = freeze(EMPTY_LIST);
 
 function List_createList(_this, value, values) {
     var length = values.length;
@@ -51,7 +52,7 @@ function List_createList(_this, value, values) {
         } else {
             _this.__root = _this.__tail = new Node(value, null);
             _this.__size = 1;
-            return _this;
+            return freeze(_this);
         }
     } else {
         return EMPTY_LIST;
@@ -72,7 +73,7 @@ function List_fromArray(_this, array) {
     _this.__root = root;
     _this.__tail = tail;
 
-    return _this;
+    return freeze(_this);
 }
 
 List.of = function(value) {
@@ -185,7 +186,7 @@ function List_set(_this, node, index, value) {
     list.__root = root;
     list.__tail = tail;
 
-    return list;
+    return freeze(list);
 }
 
 ListPrototype.set = function(index, value) {
@@ -242,7 +243,7 @@ function List_insert(_this, node, index, values) {
     list.__root = root;
     list.__tail = tail;
 
-    return list;
+    return freeze(list);
 }
 
 ListPrototype.insert = function(index) {
@@ -272,7 +273,7 @@ function List_remove(_this, node, count) {
     list.__root = root;
     list.__tail = tail;
 
-    return list;
+    return freeze(list);
 }
 
 ListPrototype.remove = function(index, count) {
@@ -320,7 +321,7 @@ function List_conj(_this, values) {
     list.__root = root;
     list.__tail = tail;
 
-    return list;
+    return freeze(list);
 }
 
 ListPrototype.conj = function() {
@@ -354,7 +355,7 @@ function List_pop(_this) {
     list.__root = newRoot;
     list.__tail = newTail;
 
-    return list;
+    return freeze(list);
 }
 
 ListPrototype.pop = function() {
@@ -376,7 +377,7 @@ function List_shift(_this) {
     list.__root = _this.__root.next;
     list.__tail = _this.__tail;
 
-    return list;
+    return freeze(list);
 }
 
 ListPrototype.shift = function() {
@@ -425,7 +426,7 @@ function List_push(_this, values, length) {
     list.__root = root;
     list.__tail = tail;
 
-    return list;
+    return freeze(list);
 }
 
 ListPrototype.push = function() {
@@ -455,7 +456,8 @@ function List_concat(a, b) {
         list.__size = asize + bsize;
         list.__root = root;
         list.__tail = tail;
-        return list;
+
+        return freeze(list);
     }
 }
 
