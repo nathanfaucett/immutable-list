@@ -3,6 +3,10 @@ immutable List
 
 immutable persistent linked list for the browser and node.js
 
+# Install
+```bash
+$ npm install git://github.com/nathanfaucett/immutable-list --save
+```
 
 # Usage
 ```javascript
