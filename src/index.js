@@ -324,12 +324,16 @@ function List_conj(_this, values) {
     return freeze(list);
 }
 
-ListPrototype.conj = function() {
-    if (arguments.length !== 0) {
-        return List_conj(this, arguments);
+ListPrototype.unshiftArray = function(array) {
+    if (array.length !== 0) {
+        return List_conj(this, array);
     } else {
         return this;
     }
+};
+
+ListPrototype.conj = function() {
+    return this.unshiftArray(arguments);
 };
 
 ListPrototype.unshift = ListPrototype.conj;
@@ -429,14 +433,18 @@ function List_push(_this, values, length) {
     return freeze(list);
 }
 
-ListPrototype.push = function() {
-    var length = arguments.length;
+ListPrototype.pushArray = function(array) {
+    var length = array.length;
 
     if (length !== 0) {
-        return List_push(this, arguments, length);
+        return List_push(this, array, length);
     } else {
         return this;
     }
+};
+
+ListPrototype.push = function() {
+    return this.pushArray(arguments);
 };
 
 function List_concat(a, b) {
@@ -461,8 +469,8 @@ function List_concat(a, b) {
     }
 }
 
-ListPrototype.concat = function() {
-    var length = arguments.length,
+ListPrototype.concatArray = function(array) {
+    var length = array.length,
         i, il, list;
 
     if (length !== 0) {
@@ -471,13 +479,17 @@ ListPrototype.concat = function() {
         list = this;
 
         while (i++ < il) {
-            list = List_concat(list, arguments[i]);
+            list = List_concat(list, array[i]);
         }
 
         return list;
     } else {
         return this;
     }
+};
+
+ListPrototype.concat = function() {
+    return this.concatArray(arguments);
 };
 
 function ListIteratorValue(done, value) {
