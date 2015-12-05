@@ -1,6 +1,7 @@
 var isNull = require("is_null"),
     isUndefined = require("is_undefined"),
     isArrayLike = require("is_array_like"),
+    isNumber = require("is_number"),
     fastBindThis = require("fast_bind_this"),
     fastSlice = require("fast_slice"),
     defineProperty = require("define_property"),
@@ -123,9 +124,9 @@ function List_get(_this, index) {
     }
 }
 
-ListPrototype.get = function(index) {
-    if (index < 0 || index >= this.__size) {
-        return undefined;
+ListPrototype.get = function(index, defaultValue) {
+    if (!isNumber(index) || index < 0 || index >= this.__size) {
+        return defaultValue;
     } else {
         return List_get(this, index).value;
     }
@@ -133,21 +134,21 @@ ListPrototype.get = function(index) {
 
 ListPrototype.nth = ListPrototype.get;
 
-ListPrototype.first = function() {
+ListPrototype.first = function(defaultValue) {
     var node = this.__root;
 
     if (isNull(node)) {
-        return undefined;
+        return defaultValue;
     } else {
         return node.value;
     }
 };
 
-ListPrototype.last = function() {
+ListPrototype.last = function(defaultValue) {
     var node = this.__tail;
 
     if (isNull(node)) {
-        return undefined;
+        return defaultValue;
     } else {
         return node.value;
     }
