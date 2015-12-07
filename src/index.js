@@ -77,12 +77,16 @@ function List_fromArray(_this, array) {
     return freeze(_this);
 }
 
-List.of = function(value) {
-    if (arguments.length > 0) {
-        return List_createList(new List(INTERNAL_CREATE), value, arguments);
+List.fromArray = function(array) {
+    if (array.length > 0) {
+        return List_createList(new List(INTERNAL_CREATE), array[0], array);
     } else {
         return EMPTY_LIST;
     }
+};
+
+List.of = function() {
+    return List.fromArray(arguments);
 };
 
 function isList(value) {
