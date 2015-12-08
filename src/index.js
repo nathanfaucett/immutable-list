@@ -744,7 +744,7 @@ ListPrototype.join = function(separator) {
 
     separator = separator || " ";
 
-    while (true) {
+    while (!isNull(node)) {
         value = node.value;
         node = node.next;
 
