@@ -7,18 +7,18 @@ var suite = new Benchmark.Suite();
 
 
 suite.add("immutable-list", function() {
-    var a = new List(0, 1, 2);
+    var a = new List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
     return function() {
-        a.conj(0, 1);
+        a.conj(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
     };
 }());
 
 suite.add("mori list", function() {
-    var a = mori.list(0, 1, 2);
+    var a = mori.list(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
     return function() {
-        mori.conj(a, 0, 1);
+        mori.conj(a, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
     };
 }());
 
@@ -31,5 +31,5 @@ suite.on("complete", function() {
     console.log("==========================================\n");
 });
 
-console.log("\n= push ===================================");
+console.log("\n= conj ===================================");
 suite.run();

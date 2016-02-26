@@ -14,7 +14,7 @@ var INTERNAL_CREATE = {},
     ITERATOR_SYMBOL = typeof(Symbol) === "function" ? Symbol.iterator : false,
     IS_LIST = "__ImmutableList__",
 
-    EMPTY_LIST = new List(INTERNAL_CREATE),
+    EMPTY_LIST = freeze(new List(INTERNAL_CREATE)),
 
     ListPrototype = List.prototype;
 
@@ -38,7 +38,7 @@ function List(value) {
     }
 }
 
-List.EMPTY = freeze(EMPTY_LIST);
+List.EMPTY = EMPTY_LIST;
 
 function List_createList(_this, value, values) {
     var length = values.length;
@@ -79,14 +79,14 @@ function List_fromArray(_this, array) {
 
 List.fromArray = function(array) {
     if (array.length > 0) {
-        return List_createList(new List(INTERNAL_CREATE), array[0], array);
+        return List_fromArray(new List(INTERNAL_CREATE), array);
     } else {
         return EMPTY_LIST;
     }
 };
 
 List.of = function() {
-    return List.fromArray(arguments);
+    return List_createList(new List(INTERNAL_CREATE), arguments[0], arguments);
 };
 
 function isList(value) {
@@ -309,10 +309,9 @@ function List_conj(_this, values) {
         size = _this.__size,
         length = values.length,
         il = length - 1,
-        i;
+        i = 0;
 
     if (isNull(tail)) {
-        i = 0;
         root = tail = new Node(values[i], null);
     } else {
         i = -1;
