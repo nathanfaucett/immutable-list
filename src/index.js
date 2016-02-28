@@ -2,6 +2,7 @@ var isNull = require("is_null"),
     isUndefined = require("is_undefined"),
     isArrayLike = require("is_array_like"),
     isNumber = require("is_number"),
+    Iterator = require("iterator"),
     fastBindThis = require("fast_bind_this"),
     fastSlice = require("fast_slice"),
     defineProperty = require("define_property"),
@@ -15,6 +16,8 @@ var INTERNAL_CREATE = {},
     IS_LIST = "__ImmutableList__",
 
     EMPTY_LIST = freeze(new List(INTERNAL_CREATE)),
+
+    IteratorValue = Iterator.Value,
 
     ListPrototype = List.prototype;
 
@@ -128,9 +131,9 @@ function List_get(_this, index) {
     }
 }
 
-ListPrototype.get = function(index, defaultValue) {
+ListPrototype.get = function(index, notSetValue) {
     if (!isNumber(index) || index < 0 || index >= this.__size) {
-        return defaultValue;
+        return notSetValue;
     } else {
         return List_get(this, index).value;
     }
@@ -138,21 +141,21 @@ ListPrototype.get = function(index, defaultValue) {
 
 ListPrototype.nth = ListPrototype.get;
 
-ListPrototype.first = function(defaultValue) {
+ListPrototype.first = function(notSetValue) {
     var node = this.__root;
 
     if (isNull(node)) {
-        return defaultValue;
+        return notSetValue;
     } else {
         return node.value;
     }
 };
 
-ListPrototype.last = function(defaultValue) {
+ListPrototype.last = function(notSetValue) {
     var node = this.__tail;
 
     if (isNull(node)) {
-        return defaultValue;
+        return notSetValue;
     } else {
         return node.value;
     }
@@ -496,28 +499,19 @@ ListPrototype.concat = function() {
     return this.concatArray(arguments);
 };
 
-function ListIteratorValue(done, value) {
-    this.done = done;
-    this.value = value;
-}
-
-function ListIterator(next) {
-    this.next = next;
-}
-
 function List_iterator(_this) {
     var node = _this.__root;
 
-    return new ListIterator(function next() {
+    return new Iterator(function next() {
         var value;
 
         if (isNull(node)) {
-            return new ListIteratorValue(true, undefined);
+            return Iterator.createDone();
         } else {
             value = node.value;
             node = node.next;
 
-            return new ListIteratorValue(false, value);
+            return new IteratorValue(value, false);
         }
     });
 }
@@ -526,16 +520,16 @@ function List_iteratorReverse(_this) {
     var root = _this.__root,
         node = _this.__tail;
 
-    return new ListIterator(function next() {
+    return new Iterator(function next() {
         var value;
 
         if (isNull(node)) {
-            return new ListIteratorValue(true, undefined);
+            return Iterator.createDone();
         } else {
             value = node.value;
             node = root !== node ? findParent(root, node) : null;
 
-            return new ListIteratorValue(false, value);
+            return new IteratorValue(value, false);
         }
     });
 }
