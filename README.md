@@ -5,12 +5,12 @@ immutable persistent linked list for the browser and node.js
 
 # Install
 ```bash
-$ npm install git://github.com/nathanfaucett/immutable-list --save
+$ npm install @nathanfaucett/immutable-list --save
 ```
 
 # Usage
 ```javascript
-var ImmutableList = require("immutable-list");
+var ImmutableList = require("@nathanfaucett/immutable-list");
 
 
 var a = new ImmutableList([0, 1, 2]),

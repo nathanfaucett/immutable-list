@@ -1,13 +1,13 @@
-var isNull = require("is_null"),
-    isUndefined = require("is_undefined"),
-    isArrayLike = require("is_array_like"),
-    isNumber = require("is_number"),
-    Iterator = require("iterator"),
-    fastBindThis = require("fast_bind_this"),
-    fastSlice = require("fast_slice"),
-    defineProperty = require("define_property"),
-    freeze = require("freeze"),
-    isEqual = require("is_equal");
+var isNull = require("@nathanfaucett/is_null"),
+    isUndefined = require("@nathanfaucett/is_undefined"),
+    isArrayLike = require("@nathanfaucett/is_array_like"),
+    isNumber = require("@nathanfaucett/is_number"),
+    Iterator = require("@nathanfaucett/iterator"),
+    fastBindThis = require("@nathanfaucett/fast_bind_this"),
+    fastSlice = require("@nathanfaucett/fast_slice"),
+    defineProperty = require("@nathanfaucett/define_property"),
+    freeze = require("@nathanfaucett/freeze"),
+    isEqual = require("@nathanfaucett/is_equal");
 
 
 var INTERNAL_CREATE = {},
