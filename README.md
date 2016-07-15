@@ -1,9 +1,12 @@
 immutable List
 =======
 
-immutable persistent linked list for the browser and node.js
+immutable persistent linked list for the browser and node.js, ImmutableList can not be changed once created. Persistent data presents a mutative API which does not update the data in-place, but instead always yields new updated data.
 
-# Install
+This implementation is based on clojure's List.
+
+
+# Install using npm.
 ```bash
 $ npm install @nathanfaucett/immutable-list --save
 ```
@@ -18,8 +21,8 @@ var a = new ImmutableList([0, 1, 2]),
     c = ImmutableList.of([0, 1, 2]),
     d = ImmutableList.of(0, 1, 2);
 
-var a0 = a.push(3),
-    a1 = a.unshift(-1);
+var a0 = a.push(3), // returns a new list with 3 at the end of the list
+    a1 = a.unshift(-1); // returns a new list with -1 at the start of the list
 ```
 
 # Docs
