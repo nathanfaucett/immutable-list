@@ -1,5 +1,5 @@
-var Benchmark = require("@nathanfaucett/benchmark"),
-    mori = require("@nathanfaucett/mori"),
+var Benchmark = require("benchmark"),
+    mori = require("mori"),
     List = require("..");
 
 
