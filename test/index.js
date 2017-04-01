@@ -136,12 +136,12 @@ tape("List set(index : Int, value : Any) should return a new list with the updat
         b = a.set(0, 2),
         c = a.set(2, 0);
 
-    assert.notEqual(b.__root, a.__root);
-    assert.equal(b.__root.next, a.__root.next);
-    assert.equal(b.__tail, a.__tail);
+    assert.notEqual(b._root, a._root);
+    assert.equal(b._root.next, a._root.next);
+    assert.equal(b._tail, a._tail);
 
-    assert.notEqual(c.__root, a.__root);
-    assert.notEqual(c.__tail, a.__tail);
+    assert.notEqual(c._root, a._root);
+    assert.notEqual(c._tail, a._tail);
 
     assert.deepEqual(b.toArray(), [2, 1, 2]);
 
@@ -154,9 +154,9 @@ tape("List insert(index : Int, ...values : Any) should return new List with inse
         c = a.insert(2, 3),
         d = a.insert(1, 1, 2);
 
-    assert.equal(b.__root.next, a.__root);
-    assert.equal(c.__root.next.next.next, a.__tail);
-    assert.equal(d.__root.next.next.next, a.__root.next);
+    assert.equal(b._root.next, a._root);
+    assert.equal(c._root.next.next.next, a._tail);
+    assert.equal(d._root.next.next.next, a._root.next);
 
     assert.deepEqual(b.toArray(), [1, 0, 1, 2]);
     assert.deepEqual(c.toArray(), [0, 1, 3, 2]);
@@ -173,9 +173,9 @@ tape("List remove(index : Int[, count = 1 : int]) should return new List with th
         e = a.remove(0, 2),
         f = e.remove(0);
 
-    assert.equal(b.__root, a.__root.next);
-    assert.equal(c.__root.next, a.__root.next.next);
-    assert.equal(e.__root, a.__root.next.next);
+    assert.equal(b._root, a._root.next);
+    assert.equal(c._root.next, a._root.next.next);
+    assert.equal(e._root, a._root.next.next);
 
     assert.deepEqual(b.toArray(), [1, 2]);
     assert.deepEqual(c.toArray(), [0, 2]);

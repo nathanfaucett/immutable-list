@@ -30,9 +30,9 @@ function List(value) {
         throw new Error("List() must be called with new");
     }
 
-    this.__size = 0;
-    this.__root = null;
-    this.__tail = null;
+    this._size = 0;
+    this._root = null;
+    this._tail = null;
 
     if (value !== INTERNAL_CREATE) {
         return List_createList(this, value, arguments);
@@ -54,8 +54,8 @@ function List_createList(_this, value, values) {
         } else if (isArrayLike(value)) {
             return List_fromArray(_this, value.toArray ? value.toArray() : value);
         } else {
-            _this.__root = _this.__tail = new Node(value, null);
-            _this.__size = 1;
+            _this._root = _this._tail = new Node(value, null);
+            _this._size = 1;
             return freeze(_this);
         }
     } else {
@@ -73,9 +73,9 @@ function List_fromArray(_this, array) {
         root = new Node(array[i], root);
     }
 
-    _this.__size = length;
-    _this.__root = root;
-    _this.__tail = tail;
+    _this._size = length;
+    _this._root = root;
+    _this._tail = tail;
 
     return freeze(_this);
 }
@@ -106,7 +106,7 @@ defineProperty(ListPrototype, IS_LIST, {
 });
 
 ListPrototype.size = function() {
-    return this.__size;
+    return this._size;
 };
 
 if (defineProperty.hasGettersSetters) {
@@ -118,21 +118,21 @@ if (defineProperty.hasGettersSetters) {
 ListPrototype.count = ListPrototype.size;
 
 ListPrototype.isEmpty = function() {
-    return this.__size === 0;
+    return this._size === 0;
 };
 
 function List_get(_this, index) {
     if (index === 0) {
-        return _this.__root;
-    } else if (index === _this.__size - 1) {
-        return _this.__tail;
+        return _this._root;
+    } else if (index === _this._size - 1) {
+        return _this._tail;
     } else {
-        return findNode(_this.__root, index);
+        return findNode(_this._root, index);
     }
 }
 
 ListPrototype.get = function(index, notSetValue) {
-    if (!isNumber(index) || index < 0 || index >= this.__size) {
+    if (!isNumber(index) || index < 0 || index >= this._size) {
         return notSetValue;
     } else {
         return List_get(this, index).value;
@@ -142,7 +142,7 @@ ListPrototype.get = function(index, notSetValue) {
 ListPrototype.nth = ListPrototype.get;
 
 ListPrototype.first = function(notSetValue) {
-    var node = this.__root;
+    var node = this._root;
 
     if (isNull(node)) {
         return notSetValue;
@@ -152,7 +152,7 @@ ListPrototype.first = function(notSetValue) {
 };
 
 ListPrototype.last = function(notSetValue) {
-    var node = this.__tail;
+    var node = this._tail;
 
     if (isNull(node)) {
         return notSetValue;
@@ -162,7 +162,7 @@ ListPrototype.last = function(notSetValue) {
 };
 
 ListPrototype.indexOf = function(value) {
-    var node = this.__root,
+    var node = this._root,
         i = 0;
 
     while (!isNull(node)) {
@@ -187,12 +187,12 @@ function copyFromTo(from, to, newNode) {
 function List_set(_this, node, index, value) {
     var list = new List(INTERNAL_CREATE),
         newNode = new Node(value, node.next),
-        root = copyFromTo(_this.__root, node, newNode),
-        tail = isNull(node.next) ? newNode : _this.__tail;
+        root = copyFromTo(_this._root, node, newNode),
+        tail = isNull(node.next) ? newNode : _this._tail;
 
-    list.__size = _this.__size;
-    list.__root = root;
-    list.__tail = tail;
+    list._size = _this._size;
+    list._root = root;
+    list._tail = tail;
 
     return freeze(list);
 }
@@ -200,7 +200,7 @@ function List_set(_this, node, index, value) {
 ListPrototype.set = function(index, value) {
     var node;
 
-    if (index < 0 || index >= this.__size) {
+    if (index < 0 || index >= this._size) {
         throw new Error("List set(index, value) index out of bounds");
     } else {
         node = List_get(this, index);
@@ -237,7 +237,7 @@ function insertCreateNodes(values, index, length, root) {
 function List_insert(_this, node, index, values) {
     var list = new List(INTERNAL_CREATE),
 
-        oldRoot = _this.__root,
+        oldRoot = _this._root,
         parent = oldRoot !== node ? findParent(oldRoot, node) : null,
 
         length = values.length,
@@ -247,15 +247,15 @@ function List_insert(_this, node, index, values) {
 
         root = isNull(parent) ? first : copyFromTo(oldRoot, node, first);
 
-    list.__size = _this.__size + length;
-    list.__root = root;
-    list.__tail = tail;
+    list._size = _this._size + length;
+    list._root = root;
+    list._tail = tail;
 
     return freeze(list);
 }
 
 ListPrototype.insert = function(index) {
-    if (index < 0 || index >= this.__size) {
+    if (index < 0 || index >= this._size) {
         throw new Error("List insert(index, value) index out of bounds");
     } else {
         return List_insert(this, List_get(this, index), index, fastSlice(arguments, 1));
@@ -274,18 +274,18 @@ function findNext(node, count) {
 function List_remove(_this, node, count) {
     var list = new List(INTERNAL_CREATE),
         next = findNext(node, count),
-        root = copyFromTo(_this.__root, node, next),
-        tail = isNull(next) ? _this.__tail : next;
+        root = copyFromTo(_this._root, node, next),
+        tail = isNull(next) ? _this._tail : next;
 
-    list.__size = _this.__size - count;
-    list.__root = root;
-    list.__tail = tail;
+    list._size = _this._size - count;
+    list._root = root;
+    list._tail = tail;
 
     return freeze(list);
 }
 
 ListPrototype.remove = function(index, count) {
-    var size = this.__size,
+    var size = this._size,
         node;
 
     count = count || 1;
@@ -295,7 +295,7 @@ ListPrototype.remove = function(index, count) {
     } else if (count > 0) {
         node = List_get(this, index);
 
-        if (node === this.__root && count === size) {
+        if (node === this._root && count === size) {
             return EMPTY_LIST;
         } else {
             return List_remove(this, node, count);
@@ -307,9 +307,9 @@ ListPrototype.remove = function(index, count) {
 
 function List_conj(_this, values) {
     var list = new List(INTERNAL_CREATE),
-        root = _this.__root,
-        tail = _this.__tail,
-        size = _this.__size,
+        root = _this._root,
+        tail = _this._tail,
+        size = _this._size,
         length = values.length,
         il = length - 1,
         i = 0;
@@ -324,9 +324,9 @@ function List_conj(_this, values) {
         root = new Node(values[i], root);
     }
 
-    list.__size = length + size;
-    list.__root = root;
-    list.__tail = tail;
+    list._size = length + size;
+    list._root = root;
+    list._tail = tail;
 
     return freeze(list);
 }
@@ -347,8 +347,8 @@ ListPrototype.unshift = ListPrototype.conj;
 
 function List_pop(_this) {
     var list = new List(INTERNAL_CREATE),
-        root = _this.__root,
-        tail = _this.__tail,
+        root = _this._root,
+        tail = _this._tail,
         newRoot = new Node(root.value, null),
         newTail = newRoot;
 
@@ -362,15 +362,15 @@ function List_pop(_this) {
         }
     }
 
-    list.__size = _this.__size - 1;
-    list.__root = newRoot;
-    list.__tail = newTail;
+    list._size = _this._size - 1;
+    list._root = newRoot;
+    list._tail = newTail;
 
     return freeze(list);
 }
 
 ListPrototype.pop = function() {
-    var size = this.__size;
+    var size = this._size;
 
     if (size === 0) {
         return this;
@@ -384,15 +384,15 @@ ListPrototype.pop = function() {
 function List_shift(_this) {
     var list = new List(INTERNAL_CREATE);
 
-    list.__size = _this.__size - 1;
-    list.__root = _this.__root.next;
-    list.__tail = _this.__tail;
+    list._size = _this._size - 1;
+    list._root = _this._root.next;
+    list._tail = _this._tail;
 
     return freeze(list);
 }
 
 ListPrototype.shift = function() {
-    var size = this.__size;
+    var size = this._size;
 
     if (size === 0) {
         return this;
@@ -426,16 +426,16 @@ function copyNodes(node, last) {
 function List_push(_this, values, length) {
     var list = new List(INTERNAL_CREATE),
 
-        oldRoot = _this.__root,
+        oldRoot = _this._root,
 
         tail = new Node(values[length - 1], null),
         first = length !== 1 ? pushCreateNodes(values, length - 1, tail) : tail,
 
         root = isNull(oldRoot) ? first : copyNodes(oldRoot, first);
 
-    list.__size = _this.__size + length;
-    list.__root = root;
-    list.__tail = tail;
+    list._size = _this._size + length;
+    list._root = root;
+    list._tail = tail;
 
     return freeze(list);
 }
@@ -455,8 +455,8 @@ ListPrototype.push = function() {
 };
 
 function List_concat(a, b) {
-    var asize = a.__size,
-        bsize = b.__size,
+    var asize = a._size,
+        bsize = b._size,
         root, tail, list;
 
     if (asize === 0) {
@@ -464,13 +464,13 @@ function List_concat(a, b) {
     } else if (bsize === 0) {
         return a;
     } else {
-        root = copyNodes(a.__root, b.__root);
-        tail = b.__tail;
+        root = copyNodes(a._root, b._root);
+        tail = b._tail;
 
         list = new List(INTERNAL_CREATE);
-        list.__size = asize + bsize;
-        list.__root = root;
-        list.__tail = tail;
+        list._size = asize + bsize;
+        list._root = root;
+        list._tail = tail;
 
         return freeze(list);
     }
@@ -500,7 +500,7 @@ ListPrototype.concat = function() {
 };
 
 function List_iterator(_this) {
-    var node = _this.__root;
+    var node = _this._root;
 
     return new Iterator(function next() {
         var value;
@@ -517,8 +517,8 @@ function List_iterator(_this) {
 }
 
 function List_iteratorReverse(_this) {
-    var root = _this.__root,
-        node = _this.__tail;
+    var root = _this._root,
+        node = _this._tail;
 
     return new Iterator(function next() {
         var value;
@@ -613,7 +613,7 @@ ListPrototype.each = ListPrototype.forEach;
 
 function List_forEachRight(_this, it, callback) {
     var next = it.next(),
-        index = _this.__size;
+        index = _this._size;
 
     while (next.done === false) {
         index -= 1;
@@ -634,7 +634,7 @@ ListPrototype.eachRight = ListPrototype.forEachRight;
 
 function List_map(_this, it, callback) {
     var next = it.next(),
-        results = new Array(_this.__size),
+        results = new Array(_this._size),
         index = 0;
 
     while (next.done === false) {
@@ -677,7 +677,7 @@ ListPrototype.reduce = function(callback, initialValue, thisArg) {
 function List_reduceRight(_this, it, callback, initialValue) {
     var next = it.next(),
         value = initialValue,
-        index = _this.__size;
+        index = _this._size;
 
     if (isUndefined(value)) {
         value = next.value;
@@ -718,8 +718,8 @@ ListPrototype.some = function(callback, thisArg) {
 };
 
 ListPrototype.toArray = function() {
-    var array = new Array(this.__size),
-        node = this.__root,
+    var array = new Array(this._size),
+        node = this._root,
         i = 0;
 
     while (!isNull(node)) {
@@ -730,9 +730,12 @@ ListPrototype.toArray = function() {
     return array;
 };
 
+ListPrototype.toJSON = ListPrototype.toArray;
+List.fromJSON = List.fromArray;
+
 ListPrototype.join = function(separator) {
     var result = "",
-        node = this.__root,
+        node = this._root,
         value;
 
     separator = separator || " ";
@@ -761,11 +764,11 @@ ListPrototype.inspect = ListPrototype.toString;
 List.equal = function(a, b) {
     if (a === b) {
         return true;
-    } else if (!a || !b || a.__size !== b.__size) {
+    } else if (!a || !b || a._size !== b._size) {
         return false;
     } else {
-        a = a.__root;
-        b = b.__root;
+        a = a._root;
+        b = b._root;
 
         while (!(isNull(a) || isNull(b))) {
             if (isEqual(a.value, b.value)) {
