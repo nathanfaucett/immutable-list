@@ -1,17 +1,21 @@
-immutable List
+Immutable List
 =======
 
-immutable persistent linked list for the browser and node.js, ImmutableList can not be changed once created. Persistent data presents a mutative API which does not update the data in-place, but instead always yields new updated data.
+Immutable persistent linked list for the browser and node.js, ImmutableList can not be changed once created. Persistent data presents a mutative API which does not update the data in-place, but instead always yields new updated data.
 
 This implementation is based on clojure's List.
 
 
-# Install using npm.
+# Install using npm
 ```bash
 $ npm install @nathanfaucett/immutable-list --save
 ```
+# Install using yarn
+```bash
+$ yarn add @nathanfaucett/immutable-list --save
+```
 
-# Usage
+# Example Usage
 ```javascript
 var ImmutableList = require("@nathanfaucett/immutable-list");
 
@@ -95,9 +99,6 @@ var a0 = a.push(3), // returns a new list with 3 at the end of the list
 #### iterator([reverse = false: Boolean]) -> Iterator
     returns Iterator
 
-#### every, filter, forEach, forEachRight, map, reduce, reduceRight, some
-    common Array methods
-
 #### toArray() -> Array<Any>
     returns List elements in an Array
 
@@ -109,3 +110,6 @@ var a0 = a.push(3), // returns a new list with 3 at the end of the list
 
 #### equals(other: List) -> Boolean
     compares this list to other list by values
+
+#### every, filter, forEach, forEachRight, map, reduce, reduceRight, some
+    common Array methods

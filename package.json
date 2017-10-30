@@ -1,6 +1,6 @@
 {
   "name": "@nathanfaucett/immutable-list",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "immutable persistent linked list for the browser and node.js",
   "repository": {
     "type": "git",
