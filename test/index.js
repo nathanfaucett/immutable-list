@@ -100,12 +100,14 @@ tape("List shift() should return list without first element of list", function(a
 });
 
 tape("List get(index : Int) should return nth element in list undefined if out of bounds", function(assert) {
-    var list = new List(1, 2, 3);
+    var list = new List(1, 2, 3, 4, 5);
 
     assert.equal(list.get(0), 1);
     assert.equal(list.get(1), 2);
     assert.equal(list.get(2), 3);
-    assert.equal(list.get(3), undefined);
+    assert.equal(list.get(3), 4);
+    assert.equal(list.get(4), 5);
+    assert.equal(list.get(5), undefined);
 
     assert.end();
 });

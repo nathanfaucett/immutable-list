@@ -26,10 +26,6 @@ module.exports = List;
 
 
 function List(value) {
-    if (!(this instanceof List)) {
-        throw new Error("List() must be called with new");
-    }
-
     this._size = 0;
     this._root = null;
     this._tail = null;

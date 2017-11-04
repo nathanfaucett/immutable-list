@@ -10,9 +10,9 @@ suite.add("immutable-list", function() {
     var a = new List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
     return function() {
-        a.set(0, 1);
-        a.set(5, 1);
-        a.set(9, 1);
+        a.get(0);
+        a.get(5);
+        a.get(9);
     };
 }());
 
@@ -20,9 +20,9 @@ suite.add("mori list", function() {
     var a = mori.list(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
     return function() {
-        mori.set(a, 0, 1);
-        mori.set(a, 5, 1);
-        mori.set(a, 9, 1);
+        mori.get(a, 0);
+        mori.get(a, 5);
+        mori.get(a, 9);
     };
 }());
 
@@ -35,5 +35,5 @@ suite.on("complete", function() {
     console.log("=========================================\n");
 });
 
-console.log("\n= set ===================================");
+console.log("\n= get ===================================");
 suite.run();
